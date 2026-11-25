@@ -16,11 +16,11 @@ main [id] { scroll-margin-block-start: 1rem; }
 
 .study-layout { max-inline-size: 76rem; margin: clamp(2.8rem, 6vw, 6rem) auto 0; }
 .study-dock {
-  position: fixed; inset-block-start: 50%; inset-inline-start: 0; z-index: 6;
-  display: flex; align-items: center; transform: translateY(-50%); visibility: hidden;
+  position: fixed; inset-block-start: 50%; inset-inline-end: 0; z-index: 6;
+  display: flex; flex-direction: row-reverse; align-items: center; transform: translateY(-50%); visibility: hidden;
 }
 .study-dock[data-available] { visibility: visible; }
-.study-dock::before { content: ""; position: absolute; inset-block-start: 50%; inset-inline-start: 0; inline-size: .5rem; block-size: 100dvh; transform: translateY(-50%); }
+.study-dock::before { content: ""; position: absolute; inset-block-start: 50%; inset-inline-end: 0; inline-size: .5rem; block-size: 100dvh; transform: translateY(-50%); }
 .study-index-toggle, .study-index {
   position: relative; color: var(--text); background: var(--surface);
   border: 1px solid var(--border); box-shadow: 0 3px 14px rgb(12 29 56 / .12);
@@ -28,11 +28,11 @@ main [id] { scroll-margin-block-start: 1rem; }
 .study-index-toggle {
   display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
   min-inline-size: 2.75rem; min-block-size: 2.75rem; padding: .5rem; color: var(--accent);
-  border-inline-start: 0; border-radius: 0 .7rem .7rem 0;
+  border-inline-end: 0; border-radius: .7rem 0 0 .7rem;
 }
 .study-index-toggle span { display: none; }
 .study-index {
-  display: grid; inline-size: min(17rem, calc(100vw - 3rem)); max-block-size: calc(100dvh - 1rem);
+  display: grid; inline-size: min(17rem, 60vw); max-block-size: calc(100dvh - 1rem);
   overflow-y: auto; overscroll-behavior: contain; padding: .65rem; border-radius: .85rem;
 }
 .study-index h2 { margin: .3rem .55rem .45rem; color: var(--muted); font-size: .85rem; }
@@ -98,11 +98,11 @@ main [id] { scroll-margin-block-start: 1rem; }
 .practice-code-line select { display: inline-block; font-size: .88rem; min-block-size: 2.5rem; }
 .study-back { margin-block: .75rem; }
 @media (hover: none) {
-  .study-dock { position: sticky; inset-block: .5rem auto; transform: none; inline-size: max-content; margin-block-end: .65rem; }
+  .study-dock { position: sticky; inset-block: .5rem auto; transform: none; inline-size: max-content; margin-inline-start: auto; margin-block-end: .65rem; }
   .study-dock::before { display: none; }
   .study-index-toggle { border: 1px solid var(--border); border-radius: .65rem; padding-inline: .75rem; }
   .study-index-toggle span { display: inline; font-size: .875rem; font-weight: 600; }
-  .study-index { position: absolute; inset-block-start: 100%; inset-inline-start: 0; max-block-size: calc(100dvh - 4rem); }
+  .study-index { position: absolute; inset-block-start: 100%; inset-inline-end: 0; max-block-size: calc(100dvh - 4rem); }
   .study-index a { min-block-size: 2.75rem; display: flex; align-items: center; }
   main .study-layout [id] { scroll-margin-block-start: 4rem; }
 }
