@@ -14,7 +14,7 @@
 
 .lab-modes { display: inline-flex; align-items: center; gap: .25rem; margin-bottom: .85rem; padding: .2rem; background: var(--page); border: 1px solid var(--border); border-radius: .4rem; }
 .lab-modes button { border: 1px solid transparent; border-radius: .22rem; background: transparent; color: var(--muted); padding: .53rem 1.1rem; font-size: .85rem; line-height: 1.25; font-weight: 650; }
-.lab-modes button[aria-pressed=true] { color: var(--selected-text); background: var(--selected-bg); border-color: var(--accent); }
+.lab-modes button[aria-pressed=true] { color: var(--on-signal); background: var(--signal); border-color: var(--signal); }
 .lab-modes button:hover:not([aria-pressed=true]):enabled { background: var(--control-hover); color: var(--text); }
 .trial-panel { display: flex; flex-direction: column; }
 .trial-body { display: flex; flex-direction: column; gap: .85rem; padding: 1.2rem 1.3rem; }

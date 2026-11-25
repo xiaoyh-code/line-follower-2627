@@ -1,19 +1,19 @@
-#probe-lab { border-radius: .35rem; container: workbench / inline-size; }
+#probe-lab { container: workbench / inline-size; }
 #probe-lab h4 { margin-block-end: .35rem; }
 #probe-lab h4 + p { margin-block-start: 0; }
 .probe-strip {
   display: grid;
   grid-template-columns: repeat(8, minmax(0, 1fr));
-  gap: .4rem;
-  margin-block: .8rem 1.05rem;
-  max-inline-size: 38rem;
+  gap: .375rem;
+  margin-block: 1rem;
 }
 .probe-toggle {
   display: grid;
+  place-content: center;
   justify-items: center;
   gap: .22rem;
   min-inline-size: 0;
-  min-block-size: 3.5rem;
+  min-block-size: 3.75rem;
   padding: .48rem .15rem;
   border: 1px solid var(--input-edge);
   border-radius: .32rem;
@@ -22,18 +22,24 @@
   font-family: var(--mono);
   cursor: pointer;
 }
-.probe-toggle:hover { box-shadow: inset 0 0 0 1px currentColor; }
+@media (hover: hover) {
+  .probe-toggle:hover { border-color: var(--signal); }
+  .probe-toggle[aria-pressed=false]:hover { background: var(--control-hover); }
+}
 .probe-toggle[aria-pressed=true] {
   color: var(--on-signal);
   background: var(--signal);
   border-color: var(--signal);
-  box-shadow: inset 0 -.2rem currentColor;
 }
 .probe-name { font-size: .78rem; }
 .probe-value { font-size: 1.12rem; font-weight: 700; line-height: 1.1; }
-#probe-lab .sensor-result div { align-items: baseline; }
-#probe-lab .sensor-result dt { min-inline-size: min(14em, 100%); color: var(--muted); }
-#probe-lab [data-register], #probe-lab [data-serial] { font-size: 1rem; }
+#probe-lab [data-register], #probe-lab [data-serial] {
+  font-size: clamp(1rem, 3.4cqi, 1.4rem);
+  color: var(--text);
+}
+@media (forced-colors: active) {
+  .probe-toggle[aria-pressed=true] { border: 3px double ButtonText; }
+}
 .probe-entry { margin-block: .85rem 0; }
 .probe-entry summary { display: list-item; min-block-size: 2.7rem; padding-block: .65rem; cursor: pointer; font-weight: 600; }
 .probe-entry .sensor-fields { padding-block: 0 .6rem; }
@@ -54,4 +60,5 @@
 #probe-wheel-report { display: inline-block; padding-inline-start: .5rem; font: 650 .9rem/1.6 var(--mono); color: var(--signal); }
 @container workbench (max-width: 25rem) {
   .probe-strip { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  #probe-lab .sensor-result { grid-template-columns: 1fr; }
 }

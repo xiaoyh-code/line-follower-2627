@@ -34,8 +34,8 @@ main [id] { scroll-margin-block-start: 1rem; }
 .lesson-weights :is(th,td) { padding: .45rem .1rem; border: 1px solid var(--border); font: 550 clamp(.72rem, 1.4vw, .96rem) var(--mono); }
 .lesson-weights th { color: var(--muted); background: var(--surface-high); }
 .lesson-weights td { color: var(--signal); }
-.lesson-gains { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,14.5rem),1fr)); gap: .9rem; margin-block-start: 1.25rem; }
-.lesson-gain { padding: 1rem; border-block-start: 3px solid var(--accent); background: var(--surface-high); min-inline-size: 0; }
+.lesson-gains { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,14.5rem),1fr)); gap: 1.5rem; margin-block-start: 1.5rem; }
+.lesson-gain { padding-block-start: .75rem; border-block-start: 1px solid var(--border); min-inline-size: 0; }
 .lesson-gain h4 { display: flex; gap: .55rem; align-items: baseline; margin: 0; font-size: 1rem; }
 .gain-symbol { font: 600 1.85rem var(--mono); color: var(--accent); }
 .lesson-gain p { font-size: .94rem; }
@@ -118,7 +118,7 @@ main [id] { scroll-margin-block-start: 1rem; }
   border-inline-start: 3px solid var(--border); background: var(--surface-high);
   font: .88rem/1.7 var(--mono);
 }
-.sensor-reader { margin-block: 1.35rem; padding: clamp(.7rem, 2.2vw, 1.35rem); border: 1px solid var(--border); }
+.sensor-reader { margin-block: 1.35rem; padding: clamp(.7rem, 2.2vw, 1.35rem); border-inline-start: 3px solid var(--accent); background: var(--page); }
 .sensor-reader h4 { margin: 0 0 .85rem; font-size: 1.12rem; }
 .sensor-fields { display: flex; flex-wrap: wrap; gap: .75rem 1.3rem; }
 .sensor-fields label { display: grid; align-content: start; gap: .35rem; min-inline-size: 0; max-inline-size: 100%; font-size: .9rem; }
@@ -126,10 +126,16 @@ main [id] { scroll-margin-block-start: 1rem; }
 .sensor-fields input { inline-size: 13rem; font: 600 1rem var(--mono); }
 .sensor-reader td { color: var(--text); }
 .sensor-reader td[data-line=true] { font-weight: 750; color: var(--signal); background: var(--surface-high); }
-.sensor-result { margin: 0; display: grid; gap: .35rem; }
-.sensor-result div { display: flex; align-items: baseline; flex-wrap: wrap; gap: .1rem .85rem; }
-.sensor-result dt { min-inline-size: 7.4em; }
-.sensor-result dd { margin: 0; font: 580 .92rem/1.6 var(--mono); }
+.sensor-result {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: .8rem 1.25rem;
+  border-block: 1px solid var(--border);
+  padding-block: .9rem;
+  margin: 0;
+}
+.sensor-result dt { color: var(--muted); font-size: .875rem; line-height: 1.5; }
+.sensor-result dd { margin: .15rem 0 0; font: 500 .92rem/1.5 var(--mono); overflow-wrap: anywhere; }
 #sensor-digits-error { color: var(--warning); }
 @media (max-width: 36rem) {
   .sensor-code { white-space: pre-wrap; overflow-wrap: anywhere; }
