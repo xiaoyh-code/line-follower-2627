@@ -206,19 +206,25 @@
 
 
       <div class="study-layout">
-        <nav class="study-index" aria-labelledby="study-index-title">
-          <h2 id="study-index-title">課堂目錄</h2>
-          <a href="#sensor-order-guide">點讀 Library 嘅八個 bit</a>
-          <a href="#pid-sensing">感測器權重</a>
-          <a href="#pid-gains">P、I、D 算式</a>
-          <a href="#pid-steering">左右輪指令</a>
-          <a href="#steering-gains-guide">P、D 同車頭搖擺</a>
-          <a href="#pid-experiments">調校實驗</a>
-          <a href="#worksheet-q19">第 19 題 · 手算 PID</a>
-          <a href="#worksheet-q20">第 20 題 · 完成程式</a>
-          <a href="#arduino">Arduino 下載</a>
-          <a href="#bom">零件清單</a>
-        </nav>
+        <div class="study-dock">
+          <button class="study-index-toggle" type="button" aria-expanded="false" aria-controls="study-index" aria-label="課堂目錄">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M9 5v14m-3.5-10h.25m-.25 3h.25"/></svg>
+            <span>課堂目錄</span>
+          </button>
+          <nav id="study-index" class="study-index" hidden aria-labelledby="study-index-title">
+            <h2 id="study-index-title">課堂目錄</h2>
+            <a href="#sensor-order-guide">點讀 Library 嘅八個 bit</a>
+            <a href="#pid-sensing">感測器權重</a>
+            <a href="#pid-gains">P、I、D 算式</a>
+            <a href="#pid-steering">左右輪指令</a>
+            <a href="#steering-gains-guide">P、D 同車頭搖擺</a>
+            <a href="#pid-experiments">調校實驗</a>
+            <a href="#worksheet-q19">第 19 題 · 手算 PID</a>
+            <a href="#worksheet-q20">第 20 題 · 完成程式</a>
+            <a href="#arduino">Arduino 下載</a>
+            <a href="#bom">零件清單</a>
+          </nav>
+        </div>
         <div class="study-body">
           <section id="pid-lesson" class="panel lesson-panel" aria-labelledby="pid-lesson-title" tabindex="-1"></section>
           <section id="worksheet" class="panel practice-panel" aria-labelledby="worksheet-title" tabindex="-1"></section>
@@ -227,7 +233,7 @@
             <p>用課堂 ESP32 範例配合兩個程式庫，對照實車點樣讀八路探頭，同埋點樣將 PID 修正送去 M3、M4。</p>
             <ul class="firmware-files">
               <li><a href="/downloads/01_Digital_States.ino" download="01_Digital_States.ino"><svg aria-hidden="true"><use href="#ic-download"/></svg><span data-no-i18n>01_Digital_States.ino</span></a><span>原裝感測器讀數範例</span></li>
-              <li><a href="/downloads/Line_Follower_mian.ino" download="Line_Follower_mian.ino"><svg aria-hidden="true"><use href="#ic-download"/></svg><span data-no-i18n>Line_Follower_mian.ino</span></a><span>循線 PID 範例</span></li>
+              <li><a href="/downloads/Line_Follower_main.ino" download="Line_Follower_main.ino"><svg aria-hidden="true"><use href="#ic-download"/></svg><span data-no-i18n>Line_Follower_main.ino</span></a><span>循線 PID 範例</span></li>
               <li><a href="/downloads/LineFollowerLearn8CH.zip" download><svg aria-hidden="true"><use href="#ic-download"/></svg><span data-no-i18n>LineFollowerLearn8CH.zip</span></a><span>八路感測板程式庫</span></li>
               <li><a href="/downloads/MotorEncoderBoard.zip" download><svg aria-hidden="true"><use href="#ic-download"/></svg><span data-no-i18n>MotorEncoderBoard.zip</span></a><span>編碼摩打板程式庫</span></li>
             </ul>
@@ -235,7 +241,7 @@
             <ol class="firmware-instructions">
               <li>用 Boards Manager 安裝 Espressif Systems 嘅 esp32，揀 ESP32 Dev Module。</li>
               <li>喺 Sketch → Include Library → Add .ZIP Library… 逐個揀上面兩個 ZIP。</li>
-              <li>開啟 Line_Follower_mian.ino。如果 IDE 提示建立同名資料夾，揀同意，然後撳 Verify 編譯。</li>
+              <li>開啟 Line_Follower_main.ino。如果 IDE 提示建立同名資料夾，揀同意，然後撳 Verify 編譯。</li>
               <li>實車運行時，用 115200 baud 開 Serial Monitor，讀取呢部車今次開機嘅 Wi-Fi 名稱、密碼同控制網址。</li>
             </ol>
             <p class="firmware-note">範例用 TT 摩打模式，M3 接左輪，M4 接右輪。實車範例保留失線搜線。網頁嘅零增益示範會略過搜線，方便觀察直行甩線。</p>

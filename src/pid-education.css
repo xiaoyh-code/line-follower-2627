@@ -14,11 +14,31 @@ main [id] { scroll-margin-block-start: 1rem; }
 .step-terms dd { margin: .35rem 0; font: 650 1.25rem var(--mono); }
 .step-terms a { display: inline-block; margin-block-end: .5rem; }
 
-.study-layout { display: grid; grid-template-columns: minmax(10rem, 14rem) minmax(0, 1fr); gap: clamp(1.2rem, 3.3vw, 4rem); align-items: start; max-inline-size: 94rem; margin: clamp(2.8rem, 6vw, 6rem) auto 0; }
-.study-index { position: sticky; inset-block-start: 1rem; display: grid; align-content: start; border-inline-start: 2px solid var(--border); padding-inline-start: 1rem; }
-.study-index h2 { margin-block: .15rem .6rem; color: var(--accent); font-size: .95rem; }
-.study-index a { padding: .45rem 0; font-size: .89rem; color: var(--muted); text-decoration: none; }
-.study-index a:hover, .study-back:hover, .practice-source:hover, .step-terms a:hover { color: var(--accent); text-decoration: underline; }
+.study-layout { max-inline-size: 76rem; margin: clamp(2.8rem, 6vw, 6rem) auto 0; }
+.study-dock {
+  position: fixed; inset-block-start: 50%; inset-inline-start: 0; z-index: 6;
+  display: flex; align-items: center; transform: translateY(-50%); visibility: hidden;
+}
+.study-dock[data-available] { visibility: visible; }
+.study-dock::before { content: ""; position: absolute; inset-block-start: 50%; inset-inline-start: 0; inline-size: .5rem; block-size: 100dvh; transform: translateY(-50%); }
+.study-index-toggle, .study-index {
+  position: relative; color: var(--text); background: var(--surface);
+  border: 1px solid var(--border); box-shadow: 0 3px 14px rgb(12 29 56 / .12);
+}
+.study-index-toggle {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  min-inline-size: 2.75rem; min-block-size: 2.75rem; padding: .5rem; color: var(--accent);
+  border-inline-start: 0; border-radius: 0 .7rem .7rem 0;
+}
+.study-index-toggle span { display: none; }
+.study-index {
+  display: grid; inline-size: min(17rem, calc(100vw - 3rem)); max-block-size: calc(100dvh - 1rem);
+  overflow-y: auto; overscroll-behavior: contain; padding: .65rem; border-radius: .85rem;
+}
+.study-index h2 { margin: .3rem .55rem .45rem; color: var(--muted); font-size: .85rem; }
+.study-index a { padding: .5rem .55rem; border-radius: .35rem; font-size: .92rem; text-decoration: none; }
+.study-index a:is(:hover,:focus-visible) { color: var(--accent); background: var(--surface-high); }
+.study-back:hover, .practice-source:hover, .step-terms a:hover { color: var(--accent); text-decoration: underline; }
 .study-body { min-inline-size: 0; }
 .lesson-panel, .practice-panel { padding: clamp(1.25rem, 3.3vw, 3.3rem); }
 .study-body :is(h2,h3,h4) { text-wrap: balance; }
@@ -77,11 +97,14 @@ main [id] { scroll-margin-block-start: 1rem; }
 .practice-code-line { min-inline-size: 0; }
 .practice-code-line select { display: inline-block; font-size: .88rem; min-block-size: 2.5rem; }
 .study-back { margin-block: .75rem; }
-@media (max-width: 52rem) {
-  .study-layout { display: block; }
-  .study-index { position: static; grid-template-columns: repeat(auto-fit,minmax(min(100%,8.7rem),1fr)); column-gap: .65rem; margin-block-end: 1.5rem; }
-  .study-index h2 { grid-column: 1 / -1; }
-  .study-index a { padding-block: .5rem; }
+@media (hover: none) {
+  .study-dock { position: sticky; inset-block: .5rem auto; transform: none; inline-size: max-content; margin-block-end: .65rem; }
+  .study-dock::before { display: none; }
+  .study-index-toggle { border: 1px solid var(--border); border-radius: .65rem; padding-inline: .75rem; }
+  .study-index-toggle span { display: inline; font-size: .875rem; font-weight: 600; }
+  .study-index { position: absolute; inset-block-start: 100%; inset-inline-start: 0; max-block-size: calc(100dvh - 4rem); }
+  .study-index a { min-block-size: 2.75rem; display: flex; align-items: center; }
+  main .study-layout [id] { scroll-margin-block-start: 4rem; }
 }
 @media (max-width: 32rem) {
   .course-nav { gap: .25rem 1.1rem; }

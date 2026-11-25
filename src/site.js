@@ -5,11 +5,13 @@ import { localize, registerTranslations, startLanguage } from './i18n.js';
 import { setupPidLesson } from './pid-lesson.js';
 import { mountPidPractice } from './pid-practice.js';
 import { mountBom } from './bom.js';
+import { setupLessonIndex } from './lesson-index.js';
 
 mountBom(document.getElementById('bom'));
 startLanguage();
 setupPidLesson(document.getElementById('pid-lesson'));
 mountPidPractice(document.getElementById('worksheet'));
+setupLessonIndex(document.querySelector('.study-layout'));
 
 const lessonTarget = () => {
   const target = document.getElementById(location.hash.slice(1));
