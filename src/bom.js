@@ -70,10 +70,10 @@ const hardware = [
 const chassis = [
   [label('3 mm 底板及上板', '3 mm lower and upper chassis plates'), label('各 1 塊', '1 of each')],
   [label('摩打固定架及輪轂連接件', 'Motor mounts and wheel hub adapters'), label('各 2 個', '2 of each')],
-  [label('循線板護架', 'Line sensor guard'), label('1 個', '1')],
-  [label('車頭三角件', 'Front triangular pieces'), label('2 個', '2')],
+  [label('循線板護架', 'Line sensor guard'), label('1 個護架', '1 guard')],
+  [label('車頭三角件', 'Front triangular pieces'), label('2 個三角件', '2 triangular pieces')],
   [label('M3 × 20 mm 六角隔柱', 'M3 × 20 mm hex standoffs'), label('14 支，兩支一組', '14, assembled in pairs')],
-  [label('3 mm 高 M3 膠隔柱', '3 mm tall M3 plastic spacers'), label('7 個', '7')],
+  [label('3 mm 高 M3 膠隔柱', '3 mm tall M3 plastic spacers'), label('7 個隔柱', '7 spacers')],
   [label('螺絲、螺帽及墊片', 'Screws, nuts and washers'), label('按實車點算', 'Count on the assembled car')],
 ];
 
