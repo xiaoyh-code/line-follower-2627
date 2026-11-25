@@ -1,0 +1,15 @@
+.heading-history { margin: 0; border-block-start: 1px solid var(--border); padding: .7rem 1rem; }
+.heading-history figcaption { display: flex; align-items: baseline; flex-wrap: wrap; gap: .25rem 1rem; }
+.heading-history h3 { font-size: .92rem; margin: 0 auto 0 0; }
+.heading-history figcaption p { margin: 0; color: var(--muted); font-size: .8rem; }
+.heading-history figcaption strong { color: var(--text); font: 650 .92rem var(--mono); }
+.heading-chart { display: grid; grid-template-columns: 3.15rem minmax(0, 1fr); gap: .12rem .35rem; margin-block-start: .45rem; }
+.heading-degrees, .heading-times { display: flex; justify-content: space-between; color: var(--muted); font: .72rem/1.1 var(--mono); }
+.heading-degrees { flex-direction: column; text-align: end; }
+.heading-times { grid-column: 2; }
+.heading-chart svg { display: block; width: 100%; height: 4.5rem; background: #101c33; overflow: hidden; stroke-linecap: butt; }
+.heading-chart .heading-grid { stroke: #344767; stroke-width: 1; }
+.heading-chart .heading-zero { stroke: #a8b7d0; stroke-width: 1; }
+.heading-chart polyline { stroke: #8dbbff; stroke-width: 2; }
+.heading-chart circle { fill: #fff; stroke: #8dbbff; stroke-width: 1.5; }
+.heading-history > p { margin: .3rem 0 0; color: var(--muted); font-size: .78rem; line-height: 1.5; }

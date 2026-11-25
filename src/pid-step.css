@@ -1,0 +1,24 @@
+:is(#step-calculation,#probe-pid-view) { margin-block: .75rem; min-inline-size: 0; container: pid-step / inline-size; }
+:is(#step-calculation,#probe-pid-view) [data-waiting] { color: var(--muted); }
+.tick-time { display: flex; align-items: baseline; flex-wrap: wrap; gap: .25rem .6rem; margin-block-end: .85rem; }
+.tick-time b, .tick-time > span:last-child { font: 600 .88rem/1.5 var(--mono); }
+.tick-time > span:last-child { color: var(--muted); }
+.tick-sensors { border-collapse: collapse; inline-size: min(100%, 36rem); table-layout: fixed; text-align: center; margin-block: .6rem .9rem; }
+.tick-sensors caption { text-align: start; color: var(--muted); font-size: .86rem; margin-block-end: .45rem; }
+.tick-sensors :is(th, td) { padding: .3rem 0; border: 1px solid var(--border); font: 550 .86rem/1.45 var(--mono); }
+.tick-sensors tr > :first-child { inline-size: 4rem; }
+.tick-sensors th { background: var(--surface-high); }
+.tick-sensors td[data-lit] { color: var(--signal); font-weight: 800; background: var(--surface-high); }
+.tick-row { display: grid; grid-template-columns: minmax(6.2rem, 9rem) minmax(0,1fr); align-items: baseline; gap: .2rem 1rem; padding-block: .55rem; border-block-start: 1px solid var(--border); }
+.tick-label { font-size: .87rem; font-weight: 650; color: var(--muted); }
+.tick-formula { font: 530 clamp(.87rem, 1.2vw, 1rem)/1.65 var(--mono); color: var(--text); overflow-wrap: anywhere; }
+.tick-formula + .tick-formula { margin-block-start: .3rem; }
+.tick-formula[data-rendered-tex] { font: normal 1rem/1.8 var(--body); }
+.tick-row:last-child :is([data-value=left],[data-value=right]) { color: var(--signal); }
+:is(.step-terms,#probe-pid-view) p.tick-hint { font-size: .8rem; color: var(--muted); margin-block: .3rem 0; }
+:is(.step-terms,#probe-pid-view) p.tick-branch { border-inline-start: 3px solid var(--accent); padding-inline-start: .65rem; margin-block: .6rem 1rem; }
+@container pid-step (max-width: 32rem) {
+  .tick-row { grid-template-columns: minmax(0,1fr); padding-block: .5rem; }
+  .tick-sensors tr > :first-child { inline-size: 3.3rem; }
+  .tick-sensors :is(th,td) { font-size: .73rem; }
+}

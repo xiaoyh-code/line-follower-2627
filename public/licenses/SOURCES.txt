@@ -1,0 +1,10 @@
+MuJoCo 4.0.1 — https://github.com/google-deepmind/mujoco/tree/4.0.1
+Three.js 0.187.0 — https://github.com/mrdoob/three.js/tree/r187
+STEP import uses the unmodified WebAssembly build distributed in occt-import-js 0.0.23.
+Package source and build scripts: https://github.com/kovacsv/occt-import-js
+Exact distributed package: https://registry.npmjs.org/occt-import-js/-/occt-import-js-0.0.23.tgz
+Open CASCADE Technology: https://dev.opencascade.org/
+Literata, Fira Sans and Fira Code — self-hosted Latin subsets from Google Fonts.
+Font sources and SIL Open Font Licenses: https://github.com/google/fonts/tree/main/ofl
+KaTeX 0.19.1 typesetting engine (MIT): https://github.com/KaTeX/KaTeX/tree/v0.19.1
+Unmodified KaTeX math fonts (SIL OFL 1.1): https://github.com/KaTeX/KaTeX/tree/v0.19.1/src/fonts

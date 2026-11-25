@@ -1,0 +1,18 @@
+.gain-diagram {
+  margin: .8rem 0 1rem;
+}
+
+.gain-diagram img {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  background: #101c32;
+  border-radius: .25rem;
+}
+
+.gain-diagram figcaption {
+  margin-block-start: .4rem;
+  color: var(--muted);
+  font-size: .85rem;
+  line-height: 1.5;
+}

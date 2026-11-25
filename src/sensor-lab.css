@@ -1,0 +1,57 @@
+#probe-lab { border-radius: .35rem; container: workbench / inline-size; }
+#probe-lab h4 { margin-block-end: .35rem; }
+#probe-lab h4 + p { margin-block-start: 0; }
+.probe-strip {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: .4rem;
+  margin-block: .8rem 1.05rem;
+  max-inline-size: 38rem;
+}
+.probe-toggle {
+  display: grid;
+  justify-items: center;
+  gap: .22rem;
+  min-inline-size: 0;
+  min-block-size: 3.5rem;
+  padding: .48rem .15rem;
+  border: 1px solid var(--input-edge);
+  border-radius: .32rem;
+  background: var(--surface-high);
+  color: var(--text);
+  font-family: var(--mono);
+  cursor: pointer;
+}
+.probe-toggle:hover { box-shadow: inset 0 0 0 1px currentColor; }
+.probe-toggle[aria-pressed=true] {
+  color: var(--on-signal);
+  background: var(--signal);
+  border-color: var(--signal);
+  box-shadow: inset 0 -.2rem currentColor;
+}
+.probe-name { font-size: .78rem; }
+.probe-value { font-size: 1.12rem; font-weight: 700; line-height: 1.1; }
+#probe-lab .sensor-result div { align-items: baseline; }
+#probe-lab .sensor-result dt { min-inline-size: min(14em, 100%); color: var(--muted); }
+#probe-lab [data-register], #probe-lab [data-serial] { font-size: 1rem; }
+.probe-entry { margin-block: .85rem 0; }
+.probe-entry summary { display: list-item; min-block-size: 2.7rem; padding-block: .65rem; cursor: pointer; font-weight: 600; }
+.probe-entry .sensor-fields { padding-block: 0 .6rem; }
+.probe-control-panel { margin-block-start: .65rem; border-block-start: 1px solid var(--border); }
+.probe-control-panel > p { margin-block: .75rem; }
+.probe-actions { display: flex; flex-wrap: wrap; gap: .55rem; margin-block: .85rem .25rem; }
+.probe-actions button {
+  display: inline-flex; align-items: center; gap: .45rem;
+  min-block-size: 2.75rem; padding: .45rem .75rem;
+  border: 1px solid var(--input-edge); border-radius: .3rem;
+  color: var(--text); background: var(--surface-high); font-weight: 650; cursor: pointer;
+}
+.probe-actions svg { inline-size: 1.05rem; block-size: 1.05rem; }
+.probe-actions #probe-step { color: var(--action-text); background: var(--action-fill); border-color: var(--action-border); }
+.probe-actions button:hover:enabled { box-shadow: inset 0 0 0 1px currentColor; }
+.probe-actions button:disabled { opacity: .55; cursor: default; }
+#probe-tick { padding: 0; margin-block-start: .8rem; }
+#probe-wheel-report { display: inline-block; padding-inline-start: .5rem; font: 650 .9rem/1.6 var(--mono); color: var(--signal); }
+@container workbench (max-width: 25rem) {
+  .probe-strip { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}

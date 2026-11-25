@@ -1,0 +1,12 @@
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+/models/car.json
+  Cache-Control: public, max-age=0, must-revalidate
+/downloads/01_Digital_States.ino
+  Content-Type: application/octet-stream
+  Content-Disposition: attachment; filename="01_Digital_States.ino"
+/downloads/Line_Follower_mian.ino
+  Content-Type: application/octet-stream
+  Content-Disposition: attachment; filename="Line_Follower_mian.ino"
+/downloads/*
+  Cache-Control: public, max-age=0, must-revalidate

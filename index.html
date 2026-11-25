@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="zh-HK">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="description" content="循線實驗室：用 MuJoCo 模擬 2627_CAR_v2，觀察八路感測器，學習 PID 算式，並完成中五工作紙計算。">
+    <meta name="theme-color" content="#164498">
+    <script src="/theme.js"></script>
+    <title>循線實驗室 · Line Follower Lab</title>
+    <link rel="icon" type="image/png" href="/src/assets/school-crest.png">
+    <script type="module" src="/src/site.js"></script>
+  </head>
+  <body>
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="icon-defs">
+      <symbol id="ic-model" viewBox="0 0 24 24"><path d="m12 2.8 8.8 5.1v8.2L12 21.2l-8.8-5.1V7.9L12 2.8Zm0 9.9 8.5-4.8M12 12.7 3.5 7.9m8.5 4.8v8.5"/></symbol>
+      <symbol id="ic-window" viewBox="0 0 24 24"><path d="M4 9V4h5m6 0h5v5m0 6v5h-5M9 20H4v-5"/><circle cx="12" cy="12" r="2.4"/></symbol>
+      <symbol id="ic-play" viewBox="0 0 24 24"><path d="m7 4 13 8-13 8Z" fill="currentColor" stroke="none"/></symbol>
+      <symbol id="ic-step" viewBox="0 0 24 24"><path d="m5 5 10 7-10 7Z" fill="currentColor" stroke="none"/><path d="M18 5v14" stroke-width="2.5"/></symbol>
+      <symbol id="ic-pause" viewBox="0 0 24 24"><path d="M6.5 5v14m11-14v14" stroke-width="4"/></symbol>
+      <symbol id="ic-reset" viewBox="0 0 24 24"><path d="M3.5 6.5v5h5m-4.4-.4a8 8 0 1 1 1.8 6.5"/></symbol>
+      <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.4"/><path d="M12 7v5l3.2 1.8"/></symbol>
+      <symbol id="ic-tune" viewBox="0 0 24 24"><path d="M3 6h3m4 0h11M3 12h10m4 0h4M3 18h5m4 0h9"/><circle cx="8" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="10" cy="18" r="2"/></symbol>
+      <symbol id="ic-telemetry" viewBox="0 0 24 24"><path d="M2.5 12h4l2.7-7.5 4.7 15 3-10 1.8 2.5h2.8"/></symbol>
+      <symbol id="ic-track" viewBox="0 0 24 24"><path d="M3 18.5h4.8c2 0 2-3.5 4-3.5h1.7c2 0 2-4 4-4H21" stroke-dasharray="3 3"/><circle cx="4" cy="6" r="2"/><path d="M8 6h7"/></symbol>
+      <symbol id="ic-pencil" viewBox="0 0 24 24"><path d="m4 16-.8 4.8L8 20l12-12-4-4L4 16Zm9.5-9.5 4 4M4 16l4 4"/></symbol>
+      <symbol id="ic-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4"/></symbol>
+    </svg>
+    <a class="skip" href="#workspace">跳到模擬工作區</a>
+    <header class="app-header">
+      <div class="heading">
+        <img class="school-crest" src="/src/assets/school-crest.png" width="1097" height="1080" alt="慈幼中學校徽">
+        <div>
+          <h1>循線實驗室</h1>
+          <p lang="en" data-no-i18n class="product-name">Line Follower Lab</p>
+          <p lang="en" data-no-i18n class="author-credit">Made By XIAO YUHUA ISM2627</p>
+        </div>
+      </div>
+      <div class="model-tools">
+        <div class="model-id"><svg aria-hidden="true"><use href="#ic-model"/></svg><div><span>車身模型</span><strong data-no-i18n id="model-name">2627_CAR_v2</strong></div></div>
+        <div class="model-actions">
+          <button type="button" id="open-model" aria-haspopup="dialog" disabled>匯入車模</button>
+          <button type="button" id="default-model" hidden>還原原裝車</button>
+        </div>
+        <div class="display-settings">
+          <select data-language-picker aria-label="介面語言"><option lang="zh-HK" value="zh-HK" data-no-i18n>繁體中文</option><option lang="en" value="en" data-no-i18n>English</option></select>
+          <label class="theme-control"><span>主題</span>
+            <select id="theme-picker"><option value="system">跟系統</option><option value="light">淺色</option><option value="dark">深色</option></select>
+          </label>
+        </div>
+        <span id="model-error" role="alert" hidden></span>
+      </div>
+    </header>
+
+    <main id="workspace" tabindex="-1">
+      <nav class="course-nav" aria-label="課堂導覽">
+        <a href="#simulator">循線模擬</a><a href="#probe-lab">探頭實驗</a><a href="#pid-lesson">PID 原理</a><a href="#worksheet">工作紙練習</a><a href="#arduino">Arduino 下載</a><a href="#bom">零件清單</a>
+      </nav>
+      <div id="simulator" class="lab-modes" role="group" aria-label="實驗模式" tabindex="-1">
+        <button type="button" id="mode-manual" aria-pressed="true">手動調校</button>
+        <button type="button" id="mode-ai" aria-pressed="false" disabled>AI 試跑</button>
+      </div>
+      <div class="workspace-row">
+        <section class="viewport panel" aria-labelledby="viewport-title">
+          <div class="viewport-header">
+            <h2 id="viewport-title"><svg aria-hidden="true"><use href="#ic-window"/></svg>模擬視窗</h2>
+            <div class="camera-options" role="group" aria-label="鏡頭視角">
+              <button type="button" data-camera="follow" aria-pressed="false">跟車</button>
+              <button type="button" data-camera="overview" aria-pressed="false">全景</button>
+              <button type="button" data-camera="top" aria-pressed="false">俯視</button>
+              <button type="button" data-camera="heading" aria-pressed="true" title="鏡頭由上跟住車位，車頭轉動時畫面方向保持固定">車頭近鏡</button>
+              <button type="button" data-camera="sensor" aria-pressed="false">感測板</button>
+            </div>
+          </div>
+          <div class="course-bar">
+            <div class="course-id"><svg aria-hidden="true"><use href="#ic-track"/></svg><span>地圖</span><strong id="course-name">預設環線</strong></div>
+            <div class="course-actions">
+              <button type="button" id="open-map" aria-haspopup="dialog" disabled><svg aria-hidden="true"><use href="#ic-pencil"/></svg><span id="map-action-label">繪製地圖</span></button>
+              <button type="button" id="default-map" title="返回預設環線，重新開始實驗" disabled hidden>還原預設</button>
+            </div>
+          </div>
+          <div class="stage">
+            <div id="scene"></div>
+            <div class="stage-state" id="stage-state" role="status"><i aria-hidden="true"></i><span id="state-label">載入中</span></div>
+            <label class="trail-switch"><input id="trail" type="checkbox" checked><span class="switch-mark" aria-hidden="true"></span>行車軌跡</label>
+            <span class="camera-hint" id="camera-hint" hidden>拖曳旋轉 · 滾動縮放</span>
+          </div>
+          <div id="load-error" class="load-error" role="alert" hidden></div>
+          <div class="loss-strip" aria-label="八路探頭失線記錄">
+            <div class="loss-indicator" id="loss-indicator"><i aria-hidden="true"></i><div><strong id="line-reading">讀取中</strong><span class="loss-key">紅色軌跡代表失線</span></div></div>
+            <div><span>失線次數</span><strong id="loss-count">0</strong></div>
+            <div><span>累計失線</span><strong><b id="loss-total">0.00</b> s</strong></div>
+            <div><span>最長一次</span><strong><b id="loss-longest">0.00</b> s</strong></div>
+          </div>
+          <div class="transport">
+            <div class="actions" id="manual-actions">
+              <button type="button" id="run" class="run" disabled><svg aria-hidden="true"><use id="run-icon" href="#ic-play"/></svg><span id="run-label">開始模擬</span></button>
+              <button type="button" id="step" class="reset step-action" aria-controls="step-terms" title="暫停時推進 10 ms 並顯示今次計算" disabled><svg aria-hidden="true"><use href="#ic-step"/></svg><span>單步 +10 ms</span></button>
+              <button type="button" id="reset" class="reset" title="返回起點，清除本次數據及軌跡" disabled><svg aria-hidden="true"><use href="#ic-reset"/></svg>重設實驗</button>
+            </div>
+            <div class="actions trial-actions" id="trial-actions" hidden>
+              <button type="button" id="trial-start" class="run"><svg aria-hidden="true"><use href="#ic-play"/></svg><span>開始試跑</span></button>
+              <button type="button" id="trial-stop" class="reset" disabled>停止</button>
+              <button type="button" id="trial-reset" class="reset" title="清除本次試跑記錄，返回起點" disabled>重設</button>
+            </div>
+            <label class="manual-rate" id="manual-rate-control" for="manual-rate"><span>播放速度</span><select id="manual-rate"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select></label>
+            <div class="timer"><svg aria-hidden="true"><use href="#ic-clock"/></svg><div><span id="timer-label">模擬時間</span><strong id="sim-time">00:00.00</strong></div></div>
+          </div>
+          <section class="telemetry" id="telemetry-panel" aria-labelledby="telemetry-title">
+            <div class="telemetry-header"><h2 id="telemetry-title"><svg aria-hidden="true"><use href="#ic-telemetry"/></svg><span id="telemetry-label">即時數據</span></h2><div class="export-bar" id="manual-export"><span>最近 15 分鐘</span><button id="export" type="button" disabled><svg aria-hidden="true"><use href="#ic-download"/></svg>匯出 CSV</button></div></div>
+            <div class="telemetry-grid">
+              <div class="sensor-block">
+                <div class="reading-head"><h3>八路反射式感測器</h3><span id="line-status" class="line-status">讀取中</span></div>
+                <div class="sensor-array" id="sensors" role="list" aria-label="八路反射式感測器，由左至右排列"></div>
+                <div class="ends"><span>左</span><span>1 = 黑線 · 0 = 白底</span><span>右</span></div>
+                <a class="probe-lab-link" href="#probe-lab">手動揀 S1–S8 試 PID</a>
+              </div>
+              <div class="wheels-block">
+                <div class="reading-head"><h3>車輪速度</h3><span class="unit">cm/s</span></div>
+                <div class="wheel-pair"><div><span>左輪</span><strong id="left-wheel">0.0</strong></div><div><span>右輪</span><strong id="right-wheel">0.0</strong></div></div>
+                <p class="wheel-targets">馬達板指令　左 <b id="left-command">0</b>　右 <b id="right-command">0</b></p>
+              </div>
+              <div class="result-block">
+                <div class="result-reading"><h3>循線偏差</h3><strong id="line-error">—</strong></div>
+                <div class="result-reading"><h3>轉向修正</h3><strong id="steer-output">0.00</strong></div>
+                <div class="result-reading"><h3 id="lap-label">完成圈數</h3><strong id="lap-count">0</strong></div>
+              </div>
+            </div>
+            <figure id="heading-history" class="heading-history" aria-labelledby="heading-history-title" aria-describedby="heading-history-note">
+              <figcaption><h3 id="heading-history-title">車頭角度 · 最近 4 秒</h3><p><span>相對角度</span> <strong data-current data-no-i18n>—</strong></p><p><span>角度範圍（最大 − 最小）</span> <strong data-range data-no-i18n>—</strong></p></figcaption>
+              <div class="heading-chart" aria-hidden="true" data-no-i18n>
+                <div class="heading-degrees"><span data-upper>+5°</span><span>0°</span><span data-lower>−5°</span></div>
+                <svg viewBox="0 0 1000 100" preserveAspectRatio="none" focusable="false">
+                  <path class="heading-grid" d="M0 2H1000 M0 26H1000 M0 74H1000 M0 98H1000 M250 0V100 M500 0V100 M750 0V100" vector-effect="non-scaling-stroke"/>
+                  <path class="heading-zero" d="M0 50H1000" vector-effect="non-scaling-stroke"/>
+                  <polyline points="" fill="none" vector-effect="non-scaling-stroke"/><circle r="2" style="display:none" vector-effect="non-scaling-stroke"/>
+                </svg>
+                <div class="heading-times"><span data-left-time>0 s</span><span data-right-time>4 s</span></div>
+              </div>
+              <p id="heading-history-note">以圖中第一個讀數為 0°。直路上反覆升跌可見車頭搖動，入彎亦會改變車頭角度。</p>
+            </figure>
+            <details class="step-terms" id="step-terms">
+              <summary>拆解今次 PID 修正</summary>
+              <p>暫停後撳「單步 +10 ms」，睇八路讀數點樣計出左右輪指令。以下數字來自同一次控制更新。</p>
+              <dl><div><dt data-tex="u_P=K_P\,e_k" data-no-i18n>P · Kₚ × e</dt><dd id="step-p">—</dd></div><div><dt data-tex="u_I=K_I\,A_k" data-no-i18n>I · Kᵢ × A</dt><dd id="step-i">—</dd></div><div><dt data-tex="u_D=K_D\,r_k" data-no-i18n>D · Kᴅ × r</dt><dd id="step-d">—</dd></div></dl>
+              <div id="step-calculation"></div>
+              <div class="step-footer"><button type="button" class="reset step-action" id="step-next" disabled><svg aria-hidden="true"><use href="#ic-step"/></svg><span>下一步 +10 ms</span></button><a href="#pid-gains">睇 P、I、D 算式</a></div>
+            </details>
+          </section>
+        </section>
+
+        <aside class="panel controls" id="manual-panel" aria-labelledby="controls-title">
+          <div class="section-header"><h2 id="controls-title"><svg aria-hidden="true"><use href="#ic-tune"/></svg>控制參數</h2></div>
+          <div class="control-body" id="control-body"></div>
+          <section id="steering-experiment" class="firmware-settings steering-test" aria-labelledby="steering-title">
+            <h3 id="steering-title">直路搖頭比較</h3>
+            <p>以課堂車最穩定嗰組做基準，D 用 1.5 代表「1 點幾」。三組都用 I = 0、速度 7、左偏 15 mm 同額外延遲 40 ms。撳掣會喺目前賽道由頭試跑。</p>
+            <div class="firmware-actions">
+              <button id="steer-pd" type="button" disabled>基準 · P 2 / D 1.5</button>
+              <button id="steer-swing" type="button" disabled>加 P、減 D · P 4 / D 0.01</button>
+              <button id="steer-p" type="button" disabled>純 P · P 4 / D 0</button>
+            </div>
+            <label for="command-delay">摩打指令額外延遲</label>
+            <select id="command-delay" disabled><option value="0">0 ms</option><option value="30">30 ms</option><option value="40" selected>40 ms</option><option value="60">60 ms</option><option value="90">90 ms</option><option value="120">120 ms</option></select>
+            <label for="start-offset">起步位置</label>
+            <select id="start-offset" disabled><option value="0">置中</option><option value="15" selected>車身向左偏 15 mm</option></select>
+            <p>40 ms 係模擬假設，實車延遲有待量度。揀 0 ms 可比較同一個起點、同一組增益下嘅反應。更改呢兩項會重設今次試跑。</p>
+            <a href="#steering-gains-guide">點解 D 去到 1 點幾會限幅？</a>
+          </section>
+          <div class="firmware-settings">
+            <h3>程式與安裝</h3>
+            <label for="recovery">八路都失線時</label>
+            <select id="recovery" disabled><option value="on">原程式搜線</option><option value="off">直行（關閉搜線）</option></select>
+            <label for="sensor-order">車頭向前時，左邊第一個探頭</label>
+            <select id="sensor-order" disabled><option value="s1-left">S1（課堂安裝）</option><option value="s8-left">S8（反向安裝）</option></select>
+            <p>P、I、D 全部為 0 時，兩輪會收到相同指令，失線後會繼續直行。更改安裝或搜線設定會重新記錄。</p>
+            <div class="firmware-actions"><button id="loss-demo" type="button" disabled>示範零增益甩線</button><button id="restore-settings" type="button" disabled>還原課堂設定</button></div>
+          </div>
+        </aside>
+        <aside class="panel trial-panel" id="trial-panel" aria-labelledby="trial-title" hidden>
+          <div class="section-header"><h2 id="trial-title"><svg aria-hidden="true"><use href="#ic-tune"/></svg>自動調校 PID</h2></div>
+          <div class="trial-body">
+            <p class="trial-intro">每輪由同一起點跑 24 秒。AI 比較循線表現，再選下一組參數。</p>
+            <div class="trial-line"><span>基礎速度指令</span><strong id="trial-speed">—</strong></div>
+            <p id="trial-setup" class="trial-intro"></p>
+            <div class="trial-line"><label for="trial-rate">重播速度</label><select id="trial-rate"><option value="0.5">0.5×</option><option value="1">1×</option><option value="2">2×</option><option value="3">3×</option><option value="6" selected>6×</option><option value="12">12×</option></select></div>
+            <label class="trial-ghosts"><input type="checkbox" id="trial-ghosts" checked>疊加歷次軌跡</label>
+            <div class="trial-legend" aria-label="軌跡圖例"><span>本輪</span><span>最佳</span><span>其他輪次</span></div>
+            <div class="trial-progress"><strong id="trial-progress" role="status">準備試跑</strong><progress id="trial-bar" value="0" max="8" aria-label="已展示的試跑輪數"></progress></div>
+            <div class="trial-gains" aria-label="目前重播的 PID 參數">
+              <div><span>P</span><strong id="trial-p">—</strong></div><div><span>I</span><strong id="trial-i">—</strong></div><div><span>D</span><strong id="trial-d">—</strong></div>
+            </div>
+            <p class="trial-note" id="trial-note">首輪以零增益直行，作為比較基準。</p>
+          </div>
+        </aside>
+      </div>
+
+      <section class="panel trial-history" id="trial-history" aria-labelledby="history-title" hidden>
+        <div class="telemetry-header"><h2 id="history-title"><svg aria-hidden="true"><use href="#ic-track"/></svg>試跑記錄</h2><div class="export-bar"><button type="button" id="trial-export" disabled><svg aria-hidden="true"><use href="#ic-download"/></svg>匯出試跑 CSV</button></div></div>
+        <div class="trial-summary" id="trial-summary" hidden><p id="trial-comparison"></p><button type="button" id="trial-apply" disabled>套用最佳 PID 至手動模式</button></div>
+        <p class="trial-empty" id="trial-empty">開始試跑後，可在這裡比較每輪成績和重播軌跡。</p>
+        <table id="trial-table" aria-labelledby="history-title" hidden>
+          <thead><tr><th scope="col">輪次</th><th scope="col">P / I / D</th><th scope="col">評分</th><th scope="col">失線時間</th><th scope="col">循線距離</th><th scope="col"><span class="visually-hidden">操作</span></th></tr></thead><tbody id="trial-rows"></tbody>
+        </table>
+      </section>
+
+
+      <div class="study-layout">
+        <nav class="study-index" aria-labelledby="study-index-title">
+          <h2 id="study-index-title">課堂目錄</h2>
+          <a href="#sensor-order-guide">點讀 Library 嘅八個 bit</a>
+          <a href="#pid-sensing">感測器權重</a>
+          <a href="#pid-gains">P、I、D 算式</a>
+          <a href="#pid-steering">左右輪指令</a>
+          <a href="#steering-gains-guide">P、D 同車頭搖擺</a>
+          <a href="#pid-experiments">調校實驗</a>
+          <a href="#worksheet-q19">第 19 題 · 手算 PID</a>
+          <a href="#worksheet-q20">第 20 題 · 完成程式</a>
+          <a href="#arduino">Arduino 下載</a>
+          <a href="#bom">零件清單</a>
+        </nav>
+        <div class="study-body">
+          <section id="pid-lesson" class="panel lesson-panel" aria-labelledby="pid-lesson-title" tabindex="-1"></section>
+          <section id="worksheet" class="panel practice-panel" aria-labelledby="worksheet-title" tabindex="-1"></section>
+          <section id="arduino" class="panel firmware-resources" aria-labelledby="firmware-title" tabindex="-1">
+            <h2 id="firmware-title">Arduino 範例同程式庫</h2>
+            <p>用課堂 ESP32 範例配合兩個程式庫，對照實車點樣讀八路探頭，同埋點樣將 PID 修正送去 M3、M4。</p>
+            <ul class="firmware-files">
+              <li><a href="/downloads/01_Digital_States.ino" download="01_Digital_States.ino"><svg aria-hidden="true"><use href="#ic-download"/></svg><span data-no-i18n>01_Digital_States.ino</span></a><span>原裝感測器讀數範例</span></li>
+              <li><a href="/downloads/Line_Follower_mian.ino" download="Line_Follower_mian.ino"><svg aria-hidden="true"><use href="#ic-download"/></svg><span data-no-i18n>Line_Follower_mian.ino</span></a><span>循線 PID 範例</span></li>
+              <li><a href="/downloads/LineFollowerLearn8CH.zip" download><svg aria-hidden="true"><use href="#ic-download"/></svg><span data-no-i18n>LineFollowerLearn8CH.zip</span></a><span>八路感測板程式庫</span></li>
+              <li><a href="/downloads/MotorEncoderBoard.zip" download><svg aria-hidden="true"><use href="#ic-download"/></svg><span data-no-i18n>MotorEncoderBoard.zip</span></a><span>編碼摩打板程式庫</span></li>
+            </ul>
+            <h3>喺 Arduino IDE 開啟</h3>
+            <ol class="firmware-instructions">
+              <li>用 Boards Manager 安裝 Espressif Systems 嘅 esp32，揀 ESP32 Dev Module。</li>
+              <li>喺 Sketch → Include Library → Add .ZIP Library… 逐個揀上面兩個 ZIP。</li>
+              <li>開啟 Line_Follower_mian.ino。如果 IDE 提示建立同名資料夾，揀同意，然後撳 Verify 編譯。</li>
+              <li>實車運行時，用 115200 baud 開 Serial Monitor，讀取呢部車今次開機嘅 Wi-Fi 名稱、密碼同控制網址。</li>
+            </ol>
+            <p class="firmware-note">範例用 TT 摩打模式，M3 接左輪，M4 接右輪。實車範例保留失線搜線。網頁嘅零增益示範會略過搜線，方便觀察直行甩線。</p>
+          </section>
+          <section id="bom" class="panel bom-panel" aria-labelledby="bom-title" tabindex="-1"></section>
+          <a class="study-back" href="#simulator">返回模擬器 ↑</a>
+        </div>
+      </div>
+    </main>
+    <noscript>請開啟 JavaScript 以運行循線模擬。</noscript>
+  </body>
+</html>

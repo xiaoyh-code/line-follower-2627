@@ -1,0 +1,43 @@
+.model-import-dialog { width: min(46rem,calc(100% - 1.5rem)); max-width: 100%; max-height: min(90dvh,58rem); margin: auto; padding: 0; overflow: hidden; color: var(--text); background: var(--surface); border: 1px solid var(--input-edge); border-radius: .5rem; box-shadow: 0 1.5rem 6rem rgb(0 0 0 / 30%); }
+.model-import-dialog::backdrop { background: rgb(0 0 0 / 58%); }
+.mi-form { display: flex; flex-direction: column; max-height: min(90dvh,58rem); }
+.mi-head,.mi-foot { display: flex; align-items: center; flex: none; gap: .75rem; padding: .85rem 1.25rem; }
+.mi-head { justify-content: space-between; border-bottom: 1px solid var(--border); }
+.mi-foot { justify-content: flex-end; border-top: 1px solid var(--border); }
+.mi-scroll { overflow-y: auto; min-height: 0; padding: 1.1rem 1.25rem; }
+.mi-file,.mi-fields label { display: grid; gap: .35rem; min-width: 0; font-size: .84rem; color: var(--text); }
+.mi-file { font-weight: 650; }
+.mi-file input { color: var(--muted); max-width: 100%; width: 100%; padding: .45rem; border: 1px dashed var(--input-edge); border-radius: .35rem; }
+.mi-file input::file-selector-button,.mi-form button,.mi-form select,.mi-form input[type=number] { border: 1px solid var(--input-edge); border-radius: .25rem; padding: .4rem .6rem; color: var(--text); background: var(--surface-high); font: inherit; }
+.mi-file input::file-selector-button,.mi-form button { cursor: pointer; font-size: .81rem; }
+.mi-file input::file-selector-button { margin-inline-end: .65rem; }
+.mi-form button:disabled { cursor: default; color: var(--muted); background: var(--surface-high); border-color: var(--border); }
+.mi-form button:hover:enabled { background: var(--control-hover); }
+.mi-form button[data-apply]:enabled { color: var(--action-text); background: var(--action-fill); border-color: var(--action-border); font-weight: 650; }
+.mi-form button[data-apply]:hover:enabled { background: var(--action-hover); }
+.mi-form button:focus-visible,.mi-form select:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.mi-help,.mi-legend,.mi-dimensions,.mi-status { color: var(--muted); font-size: .78rem; line-height: 1.55; margin: .45rem 0; overflow-wrap: anywhere; }
+.mi-status { color: var(--signal); }
+.mi-status:empty { display: none; }
+.mi-status[data-error=true] { color: var(--warning); }
+.mi-preview { height: clamp(10rem,26vh,16rem); border: 1px solid var(--border); border-radius: .25rem; background: radial-gradient(ellipse at 50% 70%,var(--surface-high),var(--page)); }
+.mi-preview canvas { width: 100%; height: 100%; display: block; touch-action: none; }
+.mi-legend { display: flex; flex-wrap: wrap; gap: .25rem .9rem; }
+.mi-legend span::before { content: ''; display: inline-block; width: .65rem; height: .14rem; vertical-align: middle; margin-right: .3rem; background: var(--accent); }
+.mi-legend span + span::before { background: var(--warning); }
+.mi-dimensions { color: var(--text); font-variant-numeric: tabular-nums; }
+.mi-form fieldset { margin: 1rem 0 0; border: 1px solid var(--border); padding: .65rem .8rem .8rem; border-radius: .3rem; min-width: 0; }
+.mi-form legend { font-size: .9rem; font-weight: 650; padding: 0 .25rem; }
+.mi-form legend small { color: var(--muted); font: .72rem var(--mono); }
+.mi-fields { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .7rem .85rem; }
+.mi-fields select,.mi-fields input { min-width: 0; width: 100%; }
+.mi-form button[data-measure] { margin-top: .65rem; }
+@media (max-width: 32rem) {
+  .mi-head,.mi-foot,.mi-scroll { padding-inline: .75rem; }
+  .mi-fields { gap: .65rem .5rem; }
+}
+@media (pointer:coarse) {
+  .mi-form button,.mi-file input::file-selector-button,.mi-fields select,.mi-fields input { min-height: 2.75rem; }
+  .mi-fields select,.mi-fields input { font-size: 1rem; }
+}
+
