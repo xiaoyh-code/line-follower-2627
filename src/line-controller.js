@@ -4,6 +4,7 @@ export const DEFAULT_PARAMS = Object.freeze({
   p: 2, i: 0, d: 1.5, speed: 7, recovery: true, sensorOrder: 's1-left',
 });
 export const MAX_COMMAND = 23;
+export const CLASSROOM_COMMAND_DELAY_MS = 120;
 export const CONTROL_PERIOD = 0.010;
 const MAX_CORRECTION = 8;
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));

@@ -1,19 +1,18 @@
 import { controlFields } from './control-fields.js';
 import { localize } from './i18n.js';
 import { createSimulation, DEFAULT_PARAMS } from './simulation.js';
-import { CONTROL_PERIOD, sensorRawBit, sensorRegisterByte } from './line-controller.js';
+import { CLASSROOM_COMMAND_DELAY_MS, CONTROL_PERIOD, sensorRawBit, sensorRegisterByte } from './line-controller.js';
 import { setupHeadingHistory } from './heading-history.js';
 import { setupPidStepView } from './pid-step-view.js';
 import { TRACK_POINTS, TRACK_WIDTH } from './track.js';
 import { createView } from './view.js';
 import { setupMapEditor } from './map-editor.js';
+import { setupStartOffset } from './start-offset.js';
 import { setupTrialPanel } from './trials-ui.js';
 
 const byId = id => document.getElementById(id);
-// Matched classroom trials use a repeatable offset and a selectable, unmeasured drive delay.
-const classroomMotion = { commandDelayMs: 40, startOffsetMm: 15 };
 const steeringTrials = new Map([['pd', { p: 2, d: 1.5 }], ['swing', { p: 4, d: 0.01 }], ['p', { p: 4, d: 0 }]]);
-const params = { ...DEFAULT_PARAMS, ...classroomMotion };
+const params = { ...DEFAULT_PARAMS, commandDelayMs: CLASSROOM_COMMAND_DELAY_MS, startOffsetMm: 15 };
 const urlOptions = new URLSearchParams(location.search);
 const initialTrial = urlOptions.get('trial');
 const status = byId('stage-state');
@@ -249,9 +248,7 @@ function showError(message, error) {
   openMapButton.disabled = true;
   defaultMapButton.disabled = true;
   byId('mode-ai').disabled = true;
-  byId('loss-demo').disabled = byId('restore-settings').disabled = true;
-  byId('recovery').disabled = byId('sensor-order').disabled = true;
-  for (const id of ['steer-p', 'steer-pd', 'steer-swing', 'command-delay', 'start-offset']) byId(id).disabled = true;
+  for (const id of ['steer-p', 'steer-pd', 'steer-swing', 'start-offset']) byId(id).disabled = true;
   setStatus('error', '模擬未能運行');
   const notice = byId('load-error');
   notice.textContent = message;
@@ -413,13 +410,9 @@ async function applyModel(model) {
   restartExperiment(next.reset(undefined, params), true);
 }
 
-function setControllerOptions() {
+function resetAtSelectedOffset() {
   if (!sim) return;
-  params.commandDelayMs = Number(byId('command-delay').value);
   params.startOffsetMm = Number(byId('start-offset').value);
-  params.sensorOrder = byId('sensor-order').value;
-  params.recovery = byId('recovery').value === 'on';
-  buildSensors();
   restartExperiment(sim.reset(undefined, params), true);
 }
 
@@ -431,32 +424,13 @@ function setManualGains(values) {
   }
 }
 
-function useSteeringTrial(name, play, delayMs = classroomMotion.commandDelayMs) {
+function useSteeringTrial(name, play) {
   setManualGains({ ...steeringTrials.get(name), i: 0, speed: 7 });
-  byId('command-delay').value = String(delayMs);
-  byId('start-offset').value = String(classroomMotion.startOffsetMm);
-  setControllerOptions();
+  resetAtSelectedOffset();
   setCamera('heading');
   if (play) {
     toggleRunning();
     byId('viewport-title').scrollIntoView({ block: 'start' });
-  }
-}
-
-function usePreset(demo) {
-  const values = demo ? { p: 0, i: 0, d: 0, speed: params.speed || DEFAULT_PARAMS.speed } : DEFAULT_PARAMS;
-  setManualGains(values);
-  if (!demo) {
-    byId('command-delay').value = String(classroomMotion.commandDelayMs);
-    byId('start-offset').value = String(classroomMotion.startOffsetMm);
-    byId('sensor-order').value = DEFAULT_PARAMS.sensorOrder;
-    byId('recovery').value = DEFAULT_PARAMS.recovery ? 'on' : 'off';
-  }
-  setControllerOptions();
-  if (demo) {
-    setCamera('top');
-    toggleRunning();
-    byId('loss-indicator').scrollIntoView({ block: 'nearest' });
   }
 }
 
@@ -508,18 +482,11 @@ async function initialize() {
     playbackRate = Number(manualRateControl.value);
   });
   resetButton.addEventListener('click', () => restartExperiment(sim.reset(undefined, params)));
-  byId('sensor-order').value = params.sensorOrder;
-  byId('sensor-order').addEventListener('change', setControllerOptions);
-  byId('recovery').addEventListener('change', setControllerOptions);
-  byId('command-delay').value = String(params.commandDelayMs);
-  byId('start-offset').value = String(params.startOffsetMm);
-  byId('command-delay').addEventListener('change', setControllerOptions);
-  byId('start-offset').addEventListener('change', setControllerOptions);
+  setupStartOffset(byId('start-offset'), params.startOffsetMm);
+  byId('start-offset').addEventListener('change', resetAtSelectedOffset);
   byId('steer-p').addEventListener('click', () => useSteeringTrial('p', true));
   byId('steer-swing').addEventListener('click', () => useSteeringTrial('swing', true));
   byId('steer-pd').addEventListener('click', () => useSteeringTrial('pd', true));
-  byId('loss-demo').addEventListener('click', () => usePreset(true));
-  byId('restore-settings').addEventListener('click', () => usePreset(false));
   openModelButton.addEventListener('click', () => modelAction(async () => {
     if (!modelImporter) {
       const {setupModelImporter} = await import('./model-import.js');
@@ -563,14 +530,8 @@ async function initialize() {
     defaultMapButton.disabled = false;
     openModelButton.disabled = false;
     byId('mode-ai').disabled = false;
-    byId('loss-demo').disabled = byId('restore-settings').disabled = false;
-    byId('recovery').disabled = byId('sensor-order').disabled = false;
-    for (const id of ['steer-p', 'steer-pd', 'steer-swing', 'command-delay', 'start-offset']) byId(id).disabled = false;
-    if (steeringTrials.has(initialTrial)) {
-      const delay = urlOptions.get('delay');
-      const allowed = [...byId('command-delay').options].some(option => option.value === delay);
-      useSteeringTrial(initialTrial, false, allowed ? Number(delay) : classroomMotion.commandDelayMs);
-    }
+    for (const id of ['steer-p', 'steer-pd', 'steer-swing', 'start-offset']) byId(id).disabled = false;
+    if (steeringTrials.has(initialTrial)) useSteeringTrial(initialTrial, false);
   } catch (error) {
     showError('未能載入車身模型或物理引擎，請檢查網絡連線並重新整理頁面。', error);
   }

@@ -1,24 +1,25 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createSimulation, DEFAULT_PARAMS } from '../src/simulation.js';
+import { CLASSROOM_COMMAND_DELAY_MS } from '../src/line-controller.js';
 import { START_POSE } from '../src/track.js';
 
 test('command transport preserves issued pairs and starts with an empty queue on every reset', async () => {
-  const params = { ...DEFAULT_PARAMS, p: 2, d: 1.5, speed: 7, commandDelayMs: 30, startOffsetMm: 15 };
+  const params = { ...DEFAULT_PARAMS, p: 2, d: 1.5, speed: 7, commandDelayMs: CLASSROOM_COMMAND_DELAY_MS, startOffsetMm: 15 };
   const sim = await createSimulation({ params });
   try {
     for (let run = 0; run < 2; run++) {
       const s = sim.reset(undefined, params);
-      assert.equal(s.commandDelayMs, 30);
+      assert.equal(s.commandDelayMs, 120);
       assert.equal(s.startOffsetMm, 15);
       assert.ok(Math.abs(s.x - START_POSE.x) < 1e-12);
       assert.ok(Math.abs(s.y - START_POSE.y - .015) < 1e-12);
       assert.ok(Math.abs(s.headingDeg) < 1e-9);
       const issued = [];
-      for (let i = 0; i < 9; i++) {
-        sim.step(.01, { ...params, speed: 7 + i });
+      for (let i = 0; i < 24; i++) {
+        sim.step(.01, { ...params, speed: 7 + i % 12 });
         issued.push([s.leftCommand, s.rightCommand]);
-        assert.deepEqual([s.leftAppliedCommand, s.rightAppliedCommand], i < 3 ? [0, 0] : issued[i - 3]);
+        assert.deepEqual([s.leftAppliedCommand, s.rightAppliedCommand], i < 12 ? [0, 0] : issued[i - 12]);
       }
     }
     const pose = { x: 0, y: 0, heading: 0 };
@@ -55,8 +56,6 @@ function measureStraights(sim, params) {
   }
   assert.ok(launch.length > 200 && returning.length > 400, 'car traversed both straight sections');
   assert.equal(s.laps, 1);
-  assert.equal(s.lossCount, 0);
-  assert.equal(s.lostTime, 0);
   return [launch, returning].map(headings => {
     // Require alternate excursions beyond +1° and −1° to exclude solver jitter.
     let previousSide = 0, reversals = 0;
@@ -69,19 +68,18 @@ function measureStraights(sim, params) {
   });
 }
 
-test('the measured PD gains track steadily while higher P and smaller D produce repeated physical yaw on the same straights', async () => {
+test('with the classroom delay, higher P and smaller D produce a wider swing and line loss', async () => {
   const sim = await createSimulation();
   try {
-    const shared = { ...DEFAULT_PARAMS, i: 0, speed: 7, startOffsetMm: 15, commandDelayMs: 40 };
-    const stable = measureStraights(sim, { ...shared, p: 2, d: 1.5 });
-    const [stableLaunch, stableReturn] = stable;
-    assert.equal(stableLaunch.reversals, 0);
-    assert.equal(stableReturn.reversals, 0);
-    assert.ok(stableLaunch.span < 7 && stableReturn.span < 4);
+    const shared = { ...DEFAULT_PARAMS, i: 0, speed: 7, startOffsetMm: 15, commandDelayMs: CLASSROOM_COMMAND_DELAY_MS };
+    const [baselineLaunch, baselineReturn] = measureStraights(sim, { ...shared, p: 2, d: 1.5 });
+    assert.ok(baselineLaunch.span < 14 && baselineReturn.span < 11);
+    assert.equal(sim.state.lossCount, 0);
     for (const d of [0, .01]) {
       const [launch, returning] = measureStraights(sim, { ...shared, p: 4, d });
-      assert.ok(launch.reversals >= 7 && launch.span > 13);
-      assert.ok(returning.reversals >= 15 && returning.span > 10);
+      assert.ok(launch.reversals >= 5 && launch.span > 30);
+      assert.ok(returning.reversals >= 10 && returning.span > 30);
+      assert.ok(sim.state.lossCount > 0);
     }
   } finally {
     sim.dispose();

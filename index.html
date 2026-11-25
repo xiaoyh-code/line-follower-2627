@@ -154,28 +154,17 @@
           <div class="control-body" id="control-body"></div>
           <section id="steering-experiment" class="firmware-settings steering-test" aria-labelledby="steering-title">
             <h3 id="steering-title">直路搖頭比較</h3>
-            <p>以課堂車最穩定嗰組做基準，D 用 1.5 代表「1 點幾」。三組都用 I = 0、速度 7、左偏 15 mm 同額外延遲 40 ms。撳掣會喺目前賽道由頭試跑。</p>
+            <p>三組試跑都用 I = 0、速度 7，同你揀嘅起步位置。基準組用 P = 2、D = 1.5，對應課堂車實測嘅「1 點幾」。</p>
             <div class="firmware-actions">
               <button id="steer-pd" type="button" disabled>基準 · P 2 / D 1.5</button>
               <button id="steer-swing" type="button" disabled>加 P、減 D · P 4 / D 0.01</button>
               <button id="steer-p" type="button" disabled>純 P · P 4 / D 0</button>
             </div>
-            <label for="command-delay">摩打指令額外延遲</label>
-            <select id="command-delay" disabled><option value="0">0 ms</option><option value="30">30 ms</option><option value="40" selected>40 ms</option><option value="60">60 ms</option><option value="90">90 ms</option><option value="120">120 ms</option></select>
             <label for="start-offset">起步位置</label>
-            <select id="start-offset" disabled><option value="0">置中</option><option value="15" selected>車身向左偏 15 mm</option></select>
-            <p>40 ms 係模擬假設，實車延遲有待量度。揀 0 ms 可比較同一個起點、同一組增益下嘅反應。更改呢兩項會重設今次試跑。</p>
+            <select id="start-offset" disabled></select>
+            <p>模擬中，摩打會喺指令發出 120 ms 後收到指令。PID 每 10 ms 更新一次。</p>
             <a href="#steering-gains-guide">點解 D 去到 1 點幾會限幅？</a>
           </section>
-          <div class="firmware-settings">
-            <h3>程式與安裝</h3>
-            <label for="recovery">八路都失線時</label>
-            <select id="recovery" disabled><option value="on">原程式搜線</option><option value="off">直行（關閉搜線）</option></select>
-            <label for="sensor-order">車頭向前時，左邊第一個探頭</label>
-            <select id="sensor-order" disabled><option value="s1-left">S1（課堂安裝）</option><option value="s8-left">S8（反向安裝）</option></select>
-            <p>P、I、D 全部為 0 時，兩輪會收到相同指令，失線後會繼續直行。更改安裝或搜線設定會重新記錄。</p>
-            <div class="firmware-actions"><button id="loss-demo" type="button" disabled>示範零增益甩線</button><button id="restore-settings" type="button" disabled>還原課堂設定</button></div>
-          </div>
         </aside>
         <aside class="panel trial-panel" id="trial-panel" aria-labelledby="trial-title" hidden>
           <div class="section-header"><h2 id="trial-title"><svg aria-hidden="true"><use href="#ic-tune"/></svg>自動調校 PID</h2></div>

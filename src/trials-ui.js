@@ -1,4 +1,5 @@
 import './trials-ui.css';
+import { formatStartOffset } from './start-offset.js';
 import { onLanguageChange, t } from './i18n.js';
 
 const ROUNDS = 8;
@@ -42,7 +43,7 @@ export function setupTrialPanel({ getInputs, renderOrigin, renderFrame, resetTra
     const left = sensorOrder === 's8-left' ? 'S8' : 'S1';
     const search = recovery ? t('原程式搜線', 'Firmware search') : t('失線直行', 'Straight ahead on loss');
     const delay = t('指令延遲 ', 'Command delay ') + commandDelayMs + ' ms';
-    const offset = t('起步偏移 ', 'Start offset ') + startOffsetMm + ' mm';
+    const offset = formatStartOffset(startOffsetMm);
     byId('trial-setup').textContent = [t(left + ' 在左', left + ' on the left'), search, delay, offset].join(' · ');
   }
 
