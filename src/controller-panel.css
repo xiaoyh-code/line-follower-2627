@@ -55,7 +55,7 @@
 /* Surfaces over moving or dense content use a stronger tint for readability. */
 @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) and (color: color-mix(in srgb, red, blue)) {
   .workspace-row > aside, #show-controller,
-  .study-index, .study-index-toggle, .camera-options, .stage-state, .trail-switch, .camera-hint {
+  .study-index, .study-index-toggle, .camera-options, .stage-state, .trail-switch, .camera-hint, .gain-stack-nav {
     background-color: color-mix(in srgb, var(--surface) var(--glass-opacity, 80%), transparent);
     background-image: var(--glass-reflection, linear-gradient(transparent, transparent)),
       radial-gradient(ellipse 110% 14rem at 95% 0%, color-mix(in srgb, var(--accent) 24%, transparent), transparent 72%),
@@ -66,7 +66,7 @@
     box-shadow: inset 0 1.5px 0 rgb(255 255 255 / .42), inset -1px 0 0 rgb(255 255 255 / .18), 0 5px 18px rgb(7 20 43 / .09);
   }
   .workspace-row > aside { --glass-opacity: 68%; }
-  #show-controller, .stage-state, .camera-hint, .trail-switch { --glass-opacity: 88%; }
+  #show-controller, .stage-state, .camera-hint, .trail-switch, .gain-stack-nav { --glass-opacity: 88%; }
   .study-index, .study-index-toggle { --glass-opacity: 78%; }
   .camera-options button[aria-pressed=true] {
     box-shadow: inset 0 1px 0 rgb(255 255 255 / .35);
@@ -98,7 +98,7 @@
 }
 @media (prefers-reduced-transparency: reduce), (forced-colors: active), (prefers-contrast: more) {
   .workspace-row > aside, .workspace-row > aside > .section-header, #show-controller, [data-collapse-controller],
-  .study-index, .study-index-toggle, .camera-options, .stage-state, .trail-switch, .camera-hint {
+  .study-index, .study-index-toggle, .camera-options, .stage-state, .trail-switch, .camera-hint, .gain-stack-nav {
     background: var(--surface);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;

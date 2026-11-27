@@ -74,11 +74,6 @@ main [id] { scroll-margin-block-start: 1rem; }
 }
 .worked-replay button:hover { background: var(--control-hover); }
 .worked-replay-status { display: block; margin-block-start: .45rem; color: var(--warning); font-size: .875rem; }
-.lesson-gains { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,14.5rem),1fr)); gap: 1.5rem; margin-block-start: 1.5rem; }
-.lesson-gain { padding-block-start: .75rem; border-block-start: 1px solid var(--border); min-inline-size: 0; }
-.lesson-gain h4 { display: flex; gap: .55rem; align-items: baseline; margin: 0; font-size: 1rem; }
-.gain-symbol { font: 600 1.85rem var(--mono); color: var(--accent); }
-.lesson-gain p { font-size: .94rem; }
 .study-body .lesson-formula { color: var(--signal); line-height: 1.9; font-size: 1rem; margin-block: .65rem; }
 .typeset-math { font-size: 1em; font-weight: normal; }
 .practice-solution li { margin-block: .85rem; }
@@ -126,10 +121,12 @@ main [id] { scroll-margin-block-start: 1rem; }
   .study-index a { min-block-size: 2.75rem; display: flex; align-items: center; }
   main .study-layout [id] { scroll-margin-block-start: 4rem; }
 }
+@media (hover: none) and (max-width: 22rem) {
+  .study-index-toggle span { display: none; }
+}
 @media (max-width: 32rem) {
   .course-nav { gap: .25rem 1.1rem; }
   .lesson-panel, .practice-panel { padding: 1rem; }
-  .lesson-gains { grid-template-columns: minmax(0,1fr); }
 }
 
 /* Keep the step control next to the clock on wide screens and reachable on phones. */

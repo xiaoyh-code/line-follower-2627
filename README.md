@@ -33,6 +33,8 @@ npm run dev
 
 學生可以喺 [PID 原理](https://line-follower-2627.pages.dev/#pid-lesson) 由八路權重算偏差，逐項理解 P、I、D，再用「拆解今次 PID 修正」比較每次模擬更新嘅數值。[工作紙練習](https://line-follower-2627.pages.dev/#worksheet) 收錄中五第 5 章第 19、20 題，附原工作紙第 6 頁 PDF。第 19 題按題意用 0.10 s、保留小數，模擬控制用 0.010 s 同整數摩打指令。
 
+P、I、D 教學卡會隨捲動逐張疊起，亦可以用磨砂玻璃 P／I／D 掣直接跳去相應部份。系統設定減少動態效果或視窗高度不足時，卡片會順序排開。[試教學卡](https://line-follower-2627.pages.dev/#pid-gains) · [StackCards 設計參考](https://github.com/tammo1007/ui-design-minimal/blob/main/docs/COMPONENTS.md#scroll-showpieces)
+
 [黑線同八路探頭俯視示範](https://line-follower-2627.pages.dev/#error-demo) 喺偏差算式旁邊。揀一個黑線位置，對照亮燈通道、權重平均數同左右輪指令。切換偏向左或右，可以比較偏差正負同修正方向，最後一格就示範探頭失線。
 
 [計一次右轉](https://line-follower-2627.pages.dev/#pid-example) 旁邊嘅 GIF 用 MuJoCo 重現例題嘅起始讀數同控制器狀態。第一格用 S6、S7 算出偏差 +4，同步顯示左輪 16、右輪 4。撳「播放 GIF」可以睇架車點樣向右修正返條線。

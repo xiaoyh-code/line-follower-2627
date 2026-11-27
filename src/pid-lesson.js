@@ -4,6 +4,7 @@ import { analogLabHtml, setupAnalogLab } from './analog-lab.js';
 import { errorDemoHtml, setupErrorDemo } from './error-demo.js';
 import { gainDiagram } from './pid-diagrams.js';
 import { setupProbeSteps } from './probe-step-controls.js';
+import { setupGainStack } from './gain-stack.js';
 import './sensor-lab.css';
 
 import { equation, math } from './math.js';
@@ -122,27 +123,43 @@ Serial.println();</code></pre>
       <p>${say('課本用連續時間寫 PID。由左至右，三項分別用到而家嘅偏差、由起步累積嘅偏差，同埋偏差嘅變化率。', 'In the continuous-time PID equation, the three terms use the current error, the error accumulated since the start, and the rate at which the error changes.')}</p>
       ${equation`u(t)=K_P\,e(t)+\allowbreak K_I\!\int_0^t e(\tau)\,\mathrm{d}\tau+\allowbreak K_D\,\dfrac{\mathrm{d}e(t)}{\mathrm{d}t}`}
       <p>${say('控制器每隔 10 ms 計算一次。下標 k 代表今次讀數，k−1 代表上一次。面板上嘅 P、I、D 數值分別設定三項修正嘅增益。', 'The controller updates every 10 ms. The subscript k means the current sample, and k−1 means the previous one. The P, I and D settings on the panel are the three gains.')} ${math`\Delta t=0.010\,\mathrm{s}`}</p>
-      <div class="lesson-gains">
-        <article class="lesson-gain">
-          <h4><span class="gain-symbol">P</span> ${say('比例', 'Proportional')}</h4>
-          ${gainDiagram('P', say)}
-          <p>${say('睇而家偏幾遠。同一個增益下，偏差大一倍，比例修正就大一倍。黑線喺正中間時，呢一項係 0。P 太大，車頭可能會越過中線，再向另一邊大幅修正。', 'P responds to the current error. At the same gain, twice the error gives twice the proportional correction. This term is zero when the line is centred. Too much P can steer the car past the line and trigger a large correction back the other way.')}</p>
-          ${equation`u_P=K_P\,e_k`}
-        </article>
-        <article class="lesson-gain">
-          <h4><span class="gain-symbol">I</span> ${say('積分', 'Integral')}</h4>
-          ${gainDiagram('I', say)}
-          <p>${say('睇架車偏咗幾耐。如果黑線一直喺同一側，就算每次偏差好細，累積值 A 都會增加修正。A 嘅單位係偏差·秒。模擬器將 A 限喺 −20 至 +20，避免積分一直增長。', 'I adds up error over time. A small error that stays on the same side builds up a correction. The accumulated error A is measured in error units × seconds. The simulator limits it to −20 through +20 to prevent it growing indefinitely.')}</p>
-          ${equation`A_k=\operatorname{clip}(A_{k-1}+e_k\,\Delta t,\allowbreak -20,20)`}
-          ${equation`u_I=K_I\,A_k`}
-        </article>
-        <article class="lesson-gain">
-          <h4><span class="gain-symbol">D</span> ${say('微分', 'Derivative')}</h4>
-          ${gainDiagram('D', say)}
-          <p>${say('睇偏差變得幾快。黑線由右邊移返中央，正偏差開始收細，D 項就會變負，減少向右轉嘅修正。連續兩次偏差相同，D 項就係 0。探頭讀數跳動時，D 太大會令輪指令急變。', 'D responds to how quickly the error changes. As the line moves from the right towards the centre, the positive error shrinks. D becomes negative and eases the right turn. Two equal errors give a zero D term. A high D gain can produce abrupt wheel commands when the sensor reading jumps.')}</p>
-          ${equation`r_k=\dfrac{e_k-e_{k-1}}{\Delta t}`}
-          ${equation`u_D=K_D\,r_k`}
-        </article>
+      <div class="gain-stack">
+        <nav class="gain-stack-nav" aria-label="${say('跳到 P、I 或 D', 'Jump to P, I or D')}">
+          <a href="#gain-p" aria-label="${say('P · 比例', 'P · proportional')}">P</a>
+          <a href="#gain-i" aria-label="${say('I · 積分', 'I · integrate')}">I</a>
+          <a href="#gain-d" aria-label="${say('D · 微分', 'D · differentiate')}">D</a>
+        </nav>
+        <div class="lesson-gains">
+          <span class="gain-anchor" id="gain-p" tabindex="-1"></span>
+          <article class="lesson-gain">
+            <h4 lang="en"><strong class="gain-symbol">P</strong>roportional</h4>
+            ${gainDiagram('P', say)}
+            <div class="gain-copy">
+              <p>${say('睇而家偏幾遠。同一個增益下，偏差大一倍，比例修正就大一倍。黑線喺正中間時，呢一項係 0。P 太大，車頭可能會越過中線，再向另一邊大幅修正。', 'P responds to the current error. At the same gain, twice the error gives twice the proportional correction. This term is zero when the line is centred. Too much P can steer the car past the line and trigger a large correction back the other way.')}</p>
+              ${equation`u_P=K_P\,e_k`}
+            </div>
+          </article>
+          <span class="gain-anchor" id="gain-i" tabindex="-1"></span>
+          <article class="lesson-gain">
+            <h4 lang="en"><strong class="gain-symbol">I</strong>ntegrate</h4>
+            ${gainDiagram('I', say)}
+            <div class="gain-copy">
+              <p>${say('睇架車偏咗幾耐。如果黑線一直喺同一側，就算每次偏差好細，累積值 A 都會增加修正。A 嘅單位係偏差·秒。模擬器將 A 限喺 −20 至 +20，避免積分一直增長。', 'I adds up error over time. A small error that stays on the same side builds up a correction. The accumulated error A is measured in error units × seconds. The simulator limits it to −20 through +20 to prevent it growing indefinitely.')}</p>
+              ${equation`A_k=\operatorname{clip}(A_{k-1}+e_k\,\Delta t,\allowbreak -20,20)`}
+              ${equation`u_I=K_I\,A_k`}
+            </div>
+          </article>
+          <span class="gain-anchor" id="gain-d" tabindex="-1"></span>
+          <article class="lesson-gain">
+            <h4 lang="en"><strong class="gain-symbol">D</strong>ifferentiate</h4>
+            ${gainDiagram('D', say)}
+            <div class="gain-copy">
+              <p>${say('睇偏差變得幾快。黑線由右邊移返中央，正偏差開始收細，D 項就會變負，減少向右轉嘅修正。連續兩次偏差相同，D 項就係 0。探頭讀數跳動時，D 太大會令輪指令急變。', 'D responds to how quickly the error changes. As the line moves from the right towards the centre, the positive error shrinks. D becomes negative and eases the right turn. Two equal errors give a zero D term. A high D gain can produce abrupt wheel commands when the sensor reading jumps.')}</p>
+              ${equation`r_k=\dfrac{e_k-e_{k-1}}{\Delta t}`}
+              ${equation`u_D=K_D\,r_k`}
+            </div>
+          </article>
+        </div>
       </div>
     </section>
 
@@ -235,6 +252,7 @@ Serial.println();</code></pre>
   bindSensorReadout(sensors, setupProbeSteps(sensors));
   setupAnalogLab(sensors.querySelector('#analog-lab'));
   setupErrorDemo(container.querySelector('#error-demo'));
+  setupGainStack(container.querySelector('.gain-stack'));
   setupWorkedReplay(container.querySelector('.worked-replay'));
 }
 
