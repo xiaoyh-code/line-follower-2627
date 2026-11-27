@@ -1,0 +1,24 @@
+@font-face {
+  font-family: 'STIX Two Math';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./assets/fonts/stix-two-math.woff2') format('woff2');
+}
+
+@supports (math-style: normal) {
+  .katex { font: inherit; }
+  .katex > math {
+    font-family: 'STIX Two Math', math;
+    font-size: 1.05em;
+    font-weight: 400;
+  }
+
+  .lesson-formula, .tick-formula[data-rendered-tex], .error-arithmetic[data-rendered-tex] {
+    overflow-x: auto;
+  }
+
+  @media (max-width: 22.5rem) {
+    .katex > math { font-size: .94em; }
+  }
+}

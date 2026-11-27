@@ -1,9 +1,11 @@
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
+import './math.css';
 
-// Inline mode allows breaks at mathematical operators. Display-style fractions
-// keep each numerator and denominator legible in both lesson and live working.
-const options = { output: 'htmlAndMathml', strict: 'error', throwOnError: true };
+// Use native MathML for OpenType maths. KaTeX's HTML renderer remains available
+// for browsers without MathML layout.
+const nativeMath = globalThis.CSS?.supports('math-style', 'normal');
+const options = { output: nativeMath ? 'mathml' : 'htmlAndMathml', strict: 'error', throwOnError: true };
 
 export function math(strings, ...values) {
   const latex = String.raw(strings, ...values);

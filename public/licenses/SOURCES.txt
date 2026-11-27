@@ -6,6 +6,7 @@ Exact distributed package: https://registry.npmjs.org/occt-import-js/-/occt-impo
 Open CASCADE Technology: https://dev.opencascade.org/
 Source Sans 3 and Source Code Pro — self-hosted Latin subsets from Google Fonts.
 Noto Sans HK — self-hosted subset containing the Han characters and CJK punctuation used in index.html and src JavaScript.
+STIX Two Math — self-hosted OpenType math font from Google Fonts.
 Google Fonts CSS API (variable weights and text subsets): https://developers.google.com/fonts/docs/css2
 Font sources and SIL Open Font Licenses: https://github.com/google/fonts/tree/main/ofl
 KaTeX 0.19.1 typesetting engine (MIT): https://github.com/KaTeX/KaTeX/tree/v0.19.1
