@@ -3,10 +3,12 @@ import {
   PerspectiveCamera, WebGLRenderer,
 } from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { controlFields } from './control-fields.js';
 import { startCourseXR } from './ar-webxr.js';
+import { createXrCourseControls } from './ar-xr-controls.js';
 
-export function createCoursePlayer(content, { host, overlayRoot, onPlayback, onXRStatus }) {
-  const { scene, assembly, clip, span } = content;
+export function createCoursePlayer(content, { host, overlayRoot, onPlayback, onXRStatus, tuningOptions }) {
+  const { scene, assembly, clip, span, createClip } = content;
   const renderer = new WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(1.75, window.devicePixelRatio || 1));
   host.append(renderer.domElement);
@@ -26,22 +28,41 @@ export function createCoursePlayer(content, { host, overlayRoot, onPlayback, onX
   controls.maxDistance = scale * 4.5;
   controls.update();
   const mixer = new AnimationMixer(assembly);
-  const action = mixer.clipAction(clip);
-  action.setLoop(LoopOnce, 1);
-  action.clampWhenFinished = true;
-  action.play().paused = true;
-  mixer.update(0);
+  let action = makeAction(clip);
+  rewind();
 
   let lastTime;
   let xr;
+  let tuning;
   let requesting = false;
   let disposed = false;
   let released = false;
 
-  function play() {
-    action.reset().play();
+  function makeAction(animation) {
+    const next = mixer.clipAction(animation);
+    next.setLoop(LoopOnce, 1);
+    next.clampWhenFinished = true;
+    return next;
+  }
+
+  function rewind() {
+    action.reset().play().paused = true;
     mixer.update(0);
+  }
+
+  function useClip(animation) {
+    const previous = action.getClip();
+    action.stop();
+    mixer.uncacheAction(previous);
+    action = makeAction(animation);
+    rewind();
+  }
+
+  function play() {
+    rewind();
+    action.paused = false;
     onPlayback('playing');
+    tuning?.setPlayback('playing');
   }
 
   function pause() {
@@ -50,14 +71,17 @@ export function createCoursePlayer(content, { host, overlayRoot, onPlayback, onX
   }
 
   function toggle() {
-    if (action.time >= clip.duration) play();
+    if (action.time >= action.getClip().duration) play();
     else if (action.paused) {
       action.paused = false;
       onPlayback('playing');
     } else pause();
   }
 
-  mixer.addEventListener('finished', () => onPlayback('finished'));
+  mixer.addEventListener('finished', () => {
+    onPlayback('finished');
+    tuning?.setPlayback('finished');
+  });
   const resize = () => {
     const { clientWidth, clientHeight } = host;
     if (!clientWidth || !clientHeight || renderer.xr.isPresenting) return;
@@ -100,21 +124,103 @@ export function createCoursePlayer(content, { host, overlayRoot, onPlayback, onX
     await xr?.end();
   }
 
+  function createTuning({ params: initialParams, lossCount: initialLossCount, createRecorder }) {
+    let params = initialParams;
+    let lossCount = initialLossCount;
+    let revision = 0;
+    let playedRevision = 0;
+    let recorder;
+    let timer;
+    let recording = false;
+    let closed = false;
+    const panel = createXrCourseControls({
+      span, params,
+      ranges: Object.fromEntries(controlFields.map(field => [field.key, field])),
+      onChange: next => {
+        params = { ...params, ...next };
+        revision++;
+        rewind();
+        schedule();
+      },
+      onReplay: replay,
+      onExit: () => endXR().catch(console.error),
+    });
+
+    function schedule() {
+      panel.setRunState('running');
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        timer = undefined;
+        if (!recording) run();
+      }, 120);
+    }
+
+    function replay() {
+      if (playedRevision === revision) play();
+      else if (!recording && timer === undefined) schedule();
+    }
+
+    async function run() {
+      const requested = revision;
+      recording = true;
+      try {
+        recorder ??= createRecorder();
+        const result = await recorder.record(params);
+        if (closed || requested !== revision) return;
+        useClip(createClip(result.frames));
+        lossCount = result.lossCount;
+        playedRevision = requested;
+        play();
+      } catch (error) {
+        if (closed) return;
+        recorder?.dispose();
+        recorder = null;
+        if (requested === revision) {
+          panel.setRunState('failed');
+          console.error(error);
+        }
+      } finally {
+        recording = false;
+        if (!closed && requested !== revision && timer === undefined) run();
+      }
+    }
+
+    return {
+      panel, replay,
+      setPlayback: state => panel.setRunState(state, lossCount),
+      dispose() {
+        closed = true;
+        clearTimeout(timer);
+        recorder?.dispose();
+        panel.dispose();
+      },
+    };
+  }
+
   async function enterXR(mode) {
     if (requesting || xr || disposed) return;
     requesting = true;
     pause();
     controls.enabled = false;
     try {
+      if (mode === 'immersive-vr' && tuningOptions) tuning = createTuning(tuningOptions);
       xr = await startCourseXR({
         mode, renderer, scene, camera, assembly, overlayRoot,
+        courseControls: tuning?.panel,
         onStatus: value => { if (!disposed) onXRStatus(value); },
-        onPlaced: () => { if (!disposed) play(); },
+        onPlaced: () => {
+          if (disposed) return;
+          if (tuning) tuning.replay();
+          else play();
+        },
         onEnd: () => {
           xr = null;
           lastTime = undefined;
+          tuning?.dispose();
+          tuning = null;
           if (disposed) release();
           else {
+            if (action.getClip() !== clip) useClip(clip);
             controls.enabled = true;
             controls.update();
             pause();
@@ -124,6 +230,8 @@ export function createCoursePlayer(content, { host, overlayRoot, onPlayback, onX
       });
       if (disposed) await endXR();
     } catch (error) {
+      tuning?.dispose();
+      tuning = null;
       controls.enabled = true;
       lastTime = undefined;
       if (!disposed) resize();

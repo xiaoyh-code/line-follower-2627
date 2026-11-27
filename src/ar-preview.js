@@ -4,7 +4,7 @@ import { localize, onLanguageChange, registerTranslations, t } from './i18n.js';
 registerTranslations({
   'AR 預覽': 'AR preview',
   '關閉': 'Close',
-  '網頁 3D 可以直接播放。支援 WebXR 嘅裝置會顯示實景 AR 或沉浸 VR。Apple 裝置可以用 Safari 撳圖片開 Quick Look。': 'Play the web 3D replay directly. Supported WebXR devices also offer AR or immersive VR. On Apple devices, tap an image in Safari to open Quick Look.',
+  '網頁 3D 可以直接播放。支援 WebXR 嘅裝置可以用實景 AR，或者喺沉浸 VR 入面調校 PID 同車速。Apple 裝置可以用 Safari 撳圖片開 Quick Look。': 'Play the web 3D replay directly. Supported WebXR devices can use camera AR or tune PID and speed in immersive VR. On Apple devices, tap an image in Safari to open Quick Look.',
   '目前地圖 · 循線重播': 'Current track · line-following replay',
   '由你設定嘅起點出發，用目前嘅調校模擬最多 20 秒。': 'Simulate up to 20 seconds from your chosen start with the current settings.',
   '用 AR 開目前地圖嘅循線重播': 'Open the current track replay in AR',
@@ -40,7 +40,7 @@ const xrMessages = {
   scanning: ['慢慢移動裝置，搵枱面或地面。', 'Move your device slowly to find a table or the floor.'],
   surface: ['撳圓圈擺低賽道。', 'Tap the ring to place the track.'],
   placed: ['正播放循線。再撳可以由頭重播。', 'Replay playing. Tap again to restart.'],
-  viewing: ['用控制器選取可以由頭重播。', 'Select with your controller to restart the replay.'],
+  viewing: ['用控制器指向賽道旁邊嘅面板調校。', 'Aim your controller at the panel beside the track to tune the car.'],
 };
 
 export function setupArPreview() {
@@ -77,6 +77,7 @@ export function setupArPreview() {
   let content;
   let player;
   let createPlayer;
+  let tuningOptions;
   let xrState;
   let webMessage = '';
 
@@ -114,6 +115,7 @@ export function setupArPreview() {
     stopPlayer();
     content?.dispose();
     content = null;
+    tuningOptions = null;
     modelUrl = exportedKey = summary = null;
     launch.hidden = save.hidden = retry.hidden = playOptions.hidden = true;
     launch.removeAttribute('href');
@@ -136,7 +138,7 @@ export function setupArPreview() {
     message = '正在運算同製作 AR 重播…';
     translate();
     try {
-      const [{ createArCourseScene, encodeArCourseScene }, { recordArCourseReplay }, playerModule] = await Promise.all([
+      const [{ createArCourseScene, encodeArCourseScene }, { createArCourseRecorder, recordArCourseReplay }, playerModule] = await Promise.all([
         import('./ar-course-export.js'), import('./ar-course-replay.js'),
         import('./ar-course-player.js'),
       ]);
@@ -153,6 +155,10 @@ export function setupArPreview() {
       // Keep the same scene and animation for inline WebGL and WebXR.
       content = prepared;
       createPlayer = playerModule.createCoursePlayer;
+      tuningOptions = {
+        params, lossCount: replay.lossCount,
+        createRecorder: () => createArCourseRecorder({ course, physical: model?.physical }),
+      };
       try {
         const bytes = await encodeArCourseScene(prepared);
         if (signal.aborted) return;
@@ -191,7 +197,7 @@ export function setupArPreview() {
     inline.hidden = false;
     try {
       player ??= createPlayer(content, {
-        host, overlayRoot,
+        host, overlayRoot, tuningOptions,
         onPlayback: state => {
           const labels = { playing: '暫停重播', paused: '繼續重播', finished: '再播一次' };
           toggle.textContent = localize(labels[state]);

@@ -1,7 +1,8 @@
 import { Color, Group, Mesh, MeshBasicMaterial, RingGeometry, Vector3 } from 'three';
 
 export async function startCourseXR({
-  mode = 'immersive-ar', renderer, scene, camera, assembly, overlayRoot, onStatus, onPlaced, onEnd,
+  mode = 'immersive-ar', renderer, scene, camera, assembly, overlayRoot, courseControls,
+  onStatus, onPlaced, onEnd,
 }) {
   const xr = navigator.xr;
   if (!xr) throw new Error('WebXR is unavailable.');
@@ -58,10 +59,11 @@ export async function startCourseXR({
     }
   }
 
-  function select() {
+  function select(event) {
     if (ended) return;
     if (placed) {
-      onPlaced?.();
+      if (courseControls) courseControls.select(event, reference);
+      else onPlaced?.();
     } else if (marker?.visible) {
       anchor.position.copy(marker.position);
       anchor.quaternion.copy(marker.quaternion);
@@ -70,7 +72,11 @@ export async function startCourseXR({
   }
 
   function update(frame) {
-    if (!frame || !reference || ended || placed) return;
+    if (!frame || !reference || ended) return;
+    if (placed) {
+      courseControls?.update(frame, reference, session.inputSources);
+      return;
+    }
     if (!isAR) {
       const viewer = frame.getViewerPose(reference)?.transform;
       if (!viewer) return;
@@ -122,6 +128,7 @@ export async function startCourseXR({
       assembly.removeFromParent();
       originalParent?.add(assembly);
       assembly.visible = originalVisibility;
+      courseControls?.group.removeFromParent();
       anchor.removeFromParent();
       scene.background = originalBackground;
       renderer.setClearAlpha(originalClearAlpha);
@@ -168,6 +175,7 @@ export async function startCourseXR({
     scene.add(anchor);
     if (marker) scene.add(marker);
     anchor.add(assembly);
+    if (courseControls) anchor.add(courseControls.group);
     assembly.visible = true;
     await renderer.xr.setSession(session);
     if (ended) throw new Error('The WebXR session ended during setup.');

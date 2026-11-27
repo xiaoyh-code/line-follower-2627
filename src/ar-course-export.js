@@ -192,9 +192,10 @@ export async function createArCourseScene({ course = null, model = null, startOf
   try {
     addCourseSheet(assembly, map);
     const vehicle = addCar(assembly, parts, course?.startPose ?? START_POSE, model?.physical, course, startOffsetMm);
-    const clip = replayClip(vehicle, frames);
+    const createClip = samples => replayClip(vehicle, samples);
+    const clip = createClip(frames);
     scene.updateMatrixWorld(true);
-    return { scene, assembly, clip, span: mapSpan * scale, textureSize: Math.max(map.width, map.height), dispose };
+    return { scene, assembly, clip, createClip, span: mapSpan * scale, textureSize: Math.max(map.width, map.height), dispose };
   } catch (error) {
     dispose();
     throw error;

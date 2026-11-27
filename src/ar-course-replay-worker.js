@@ -10,11 +10,13 @@ function readFrame(state, time) {
   return { time, x, y, z, quaternion: [...quaternion], leftAngle, rightAngle };
 }
 
+let simulation;
+
 self.onmessage = async ({ data: { course = null, physical, params } }) => {
-  let simulation;
   try {
     const settings = { ...DEFAULT_PARAMS, commandDelayMs: CLASSROOM_COMMAND_DELAY_MS, ...params };
-    simulation = await createSimulation({ course, physical, params: settings });
+    if (simulation) simulation.reset(undefined, settings);
+    else simulation = await createSimulation({ course, physical, params: settings });
     const frames = [readFrame(simulation.state, 0)];
     const frameCount = Math.round(RECORD_SECONDS / SAMPLE_PERIOD);
     for (let frame = 1; frame <= frameCount; frame++) {
@@ -24,7 +26,5 @@ self.onmessage = async ({ data: { course = null, physical, params } }) => {
     self.postMessage({ frames, duration: RECORD_SECONDS, lossCount, lostTime });
   } catch (error) {
     self.postMessage({ error: String(error?.message || error) });
-  } finally {
-    simulation?.dispose();
   }
 };
