@@ -266,17 +266,32 @@
         <form method="dialog"><button type="submit" autofocus>關閉</button></form>
       </header>
       <div class="ar-body">
-        <p>用 iPhone Safari 撳圖片，喺 Quick Look 揀 AR，再將鏡頭對住枱面或地面。</p>
+        <p>網頁 3D 可以直接播放。支援 WebXR 嘅裝置會顯示實景 AR 或沉浸 VR。Apple 裝置可以用 Safari 撳圖片開 Quick Look。</p>
         <section class="ar-current" id="ar-current" aria-labelledby="ar-current-title" hidden>
           <div>
-            <h3 id="ar-current-title">目前地圖同車模</h3>
+            <h3 id="ar-current-title">目前地圖 · 循線重播</h3>
             <p id="ar-course-name"></p>
-            <p class="ar-note">靜態預覽會將車模擺喺你設定嘅起點同方向。</p>
+            <p class="ar-note">由你設定嘅起點出發，用目前嘅調校模擬最多 20 秒。</p>
+            <p id="ar-params" class="ar-params" data-no-i18n></p>
             <p class="ar-status" id="ar-status" role="status"></p>
+            <button type="button" id="ar-generate">製作目前賽道重播</button>
             <button type="button" id="ar-retry" hidden>再試一次</button>
-            <a id="ar-save" download="custom-course.usdz" hidden>儲存 USDZ</a>
+            <div class="ar-buttons" id="ar-play-options" hidden>
+              <button type="button" id="ar-watch">網頁 3D</button>
+              <button type="button" id="ar-enter-ar" hidden>實景 AR</button>
+              <button type="button" id="ar-enter-vr" hidden>沉浸 VR</button>
+              <a id="ar-save" download="custom-course.usdz" hidden>儲存 USDZ</a>
+            </div>
+            <p class="ar-status" id="ar-web-status" role="status"></p>
           </div>
-          <a class="ar-picture" data-custom-ar rel="ar" download="custom-course.usdz" aria-label="用 AR 開目前地圖同車模" hidden><img alt="目前套用嘅地圖"></a>
+          <a class="ar-picture" data-custom-ar rel="ar" download="custom-course.usdz" aria-label="用 AR 開目前地圖嘅循線重播" hidden><img alt="目前套用嘅地圖"></a>
+          <div class="ar-inline" id="ar-inline" hidden>
+            <div id="ar-canvas" role="img" aria-label="目前賽道同車嘅 3D 重播"></div>
+            <div class="ar-inline-actions">
+              <button id="ar-toggle" type="button">暫停重播</button>
+              <button id="ar-restart" type="button">由頭重播</button>
+            </div>
+          </div>
         </section>
         <div class="ar-models">
           <figure>
@@ -288,6 +303,10 @@
             <figcaption><strong>預設賽道 · 跑一圈</strong><span>開模型後撳播放，睇約 15 秒循線重播。</span></figcaption>
           </figure>
         </div>
+      </div>
+      <div id="ar-xr-overlay">
+        <p id="ar-xr-status" role="status"></p>
+        <button type="button" id="ar-exit-xr">離開實景 AR</button>
       </div>
     </dialog>
     <noscript>請開啟 JavaScript 以運行循線模擬。</noscript>

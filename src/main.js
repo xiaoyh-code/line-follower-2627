@@ -483,11 +483,9 @@ async function initialize(updateArScene) {
   });
   resetButton.addEventListener('click', () => restartExperiment(sim.reset(undefined, params)));
   setupStartOffset(byId('start-offset'), params.startOffsetMm);
-  const refreshAr = () => updateArScene({ course: currentCourse, model: currentModel, startOffsetMm: params.startOffsetMm });
-  byId('start-offset').addEventListener('change', () => {
-    resetAtSelectedOffset();
-    if (currentCourse || currentModel) refreshAr();
-  });
+  const refreshAr = () => updateArScene({ course: currentCourse, model: currentModel, readParams: () => ({ ...params }) });
+  refreshAr();
+  byId('start-offset').addEventListener('change', resetAtSelectedOffset);
   byId('steer-p').addEventListener('click', () => useSteeringTrial('p', true));
   byId('steer-swing').addEventListener('click', () => useSteeringTrial('swing', true));
   byId('steer-pd').addEventListener('click', () => useSteeringTrial('pd', true));
