@@ -1,0 +1,54 @@
+#ar-preview {
+  width: min(52rem, calc(100% - 1.5rem));
+  max-height: min(90dvh, 48rem);
+  padding: 0;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--input-edge);
+  border-radius: .95rem;
+  box-shadow: 0 1.3rem 4rem rgb(0 0 0 / .3);
+  overscroll-behavior: contain;
+}
+#ar-preview::backdrop { background: rgb(7 16 31 / .60); }
+.ar-heading {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: .65rem clamp(.85rem, 3vw, 1.35rem);
+  background: var(--surface-high);
+  border-block-end: 1px solid var(--border);
+}
+.ar-heading h2 { font-size: 1.2rem; }
+.ar-heading button, #ar-retry, #ar-save {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: .3rem .65rem;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--input-edge);
+  border-radius: .4rem;
+  font-weight: 650;
+}
+.ar-body { display: grid; gap: 1rem; padding: 1rem clamp(.85rem, 3vw, 1.35rem) 1.35rem; }
+.ar-body p { line-height: 1.55; }
+.ar-models, .ar-current { display: grid; gap: 1rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ar-models figure, .ar-current { margin: 0; padding: .65rem; border: 1px solid var(--border); background: var(--surface-high); border-radius: .7rem; }
+.ar-current p { margin-block-start: .3rem; overflow-wrap: anywhere; }
+.ar-note, .ar-models figcaption span { color: var(--muted); font-size: .9rem; }
+.ar-status { color: var(--signal); font-size: .9rem; }
+.ar-status:empty { display: none; }
+#ar-save, #ar-retry { margin-block-start: .45rem; }
+.ar-picture { display: block; border-radius: .45rem; border: 1px solid var(--input-edge); background: #e1e8f1; overflow: hidden; }
+.ar-picture img { display: block; width: 100%; height: auto; max-height: 16rem; object-fit: contain; }
+.ar-current .ar-picture { align-self: center; background: #fff; }
+.ar-models figcaption { display: grid; gap: .2rem; padding: .5rem .15rem .15rem; }
+#ar-preview a:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+#ar-preview :is(a,button):hover { border-color: var(--signal); }
+@media (max-width: 34rem) {
+  .ar-models, .ar-current { grid-template-columns: minmax(0, 1fr); }
+}

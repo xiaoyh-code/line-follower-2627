@@ -9,6 +9,7 @@ import { setupControllerPanel } from './controller-panel.js';
 import { setupLessonIndex } from './lesson-index.js';
 import { highlightArduino } from './arduino-code.js';
 import { setupSketchPreview } from './sketch-preview.js';
+import { setupArPreview } from './ar-preview.js';
 
 mountBom(document.getElementById('bom'));
 startLanguage();
@@ -18,6 +19,7 @@ document.querySelectorAll('#pid-lesson .sensor-code code:not(.arduino-code), .pr
 setupSketchPreview(document.getElementById('arduino'));
 setupLessonIndex(document.querySelector('.study-layout'));
 setupControllerPanel(document.querySelector('.workspace-row'));
+const updateArScene = setupArPreview();
 
 const lessonTarget = () => {
   const target = document.getElementById(location.hash.slice(1));
@@ -33,7 +35,7 @@ async function startSimulator() {
   window.removeEventListener('hashchange', onNavigation);
   try {
     const { initializeSimulator } = await import('./main.js');
-    await initializeSimulator();
+    await initializeSimulator(updateArScene);
   } catch (error) {
     const message = '未能載入模擬器，請檢查網絡連線並重新整理頁面。';
     registerTranslations({ [message]: 'The simulator could not load. Check your connection and reload.' });

@@ -77,6 +77,7 @@
             <div class="course-id"><svg aria-hidden="true"><use href="#ic-track"/></svg><span>地圖</span><strong id="course-name">預設環線</strong></div>
             <div class="course-actions">
               <button type="button" id="open-map" aria-haspopup="dialog" disabled><svg aria-hidden="true"><use href="#ic-pencil"/></svg><span id="map-action-label">繪製地圖</span></button>
+              <button type="button" id="open-ar" aria-haspopup="dialog"><svg aria-hidden="true"><use href="#ic-model"/></svg><span>AR 預覽</span></button>
               <button type="button" id="default-map" title="返回預設環線，重新開始實驗" disabled hidden>還原預設</button>
             </div>
           </div>
@@ -259,6 +260,36 @@
         </div>
       </div>
     </main>
+    <dialog id="ar-preview" aria-labelledby="ar-title">
+      <header class="ar-heading">
+        <h2 id="ar-title">AR 預覽</h2>
+        <form method="dialog"><button type="submit" autofocus>關閉</button></form>
+      </header>
+      <div class="ar-body">
+        <p>用 iPhone Safari 撳圖片，喺 Quick Look 揀 AR，再將鏡頭對住枱面或地面。</p>
+        <section class="ar-current" id="ar-current" aria-labelledby="ar-current-title" hidden>
+          <div>
+            <h3 id="ar-current-title">目前地圖同車模</h3>
+            <p id="ar-course-name"></p>
+            <p class="ar-note">靜態預覽會將車模擺喺你設定嘅起點同方向。</p>
+            <p class="ar-status" id="ar-status" role="status"></p>
+            <button type="button" id="ar-retry" hidden>再試一次</button>
+            <a id="ar-save" download="custom-course.usdz" hidden>儲存 USDZ</a>
+          </div>
+          <a class="ar-picture" data-custom-ar rel="ar" download="custom-course.usdz" aria-label="用 AR 開目前地圖同車模" hidden><img alt="目前套用嘅地圖"></a>
+        </section>
+        <div class="ar-models">
+          <figure>
+            <a class="ar-picture" rel="ar" href="/ar/2627-car.usdz" aria-label="用 AR 開原比例車模"><img src="/ar/2627-car.webp" width="1200" height="760" alt="2627_CAR_v2 車模" loading="lazy"></a>
+            <figcaption><strong>擺車上枱</strong><span>原比例車模約 21 × 21 cm。</span></figcaption>
+          </figure>
+          <figure>
+            <a class="ar-picture" rel="ar" href="/ar/tabletop-lap-contrast.usdz" aria-label="用 AR 開預設賽道"><img src="/ar/tabletop-lap-contrast.webp" width="1250" height="833" alt="有粗黑線嘅枱面預設賽道" loading="lazy"></a>
+            <figcaption><strong>預設賽道 · 跑一圈</strong><span>開模型後撳播放，睇約 15 秒循線重播。</span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </dialog>
     <noscript>請開啟 JavaScript 以運行循線模擬。</noscript>
   </body>
 </html>

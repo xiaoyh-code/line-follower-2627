@@ -453,7 +453,7 @@ async function modelAction(action) {
   }
 }
 
-async function initialize() {
+async function initialize(updateArScene) {
   buildSettings();
   buildSensors();
   trials = setupTrialPanel({
@@ -483,26 +483,38 @@ async function initialize() {
   });
   resetButton.addEventListener('click', () => restartExperiment(sim.reset(undefined, params)));
   setupStartOffset(byId('start-offset'), params.startOffsetMm);
-  byId('start-offset').addEventListener('change', resetAtSelectedOffset);
+  const refreshAr = () => updateArScene({ course: currentCourse, model: currentModel, startOffsetMm: params.startOffsetMm });
+  byId('start-offset').addEventListener('change', () => {
+    resetAtSelectedOffset();
+    if (currentCourse || currentModel) refreshAr();
+  });
   byId('steer-p').addEventListener('click', () => useSteeringTrial('p', true));
   byId('steer-swing').addEventListener('click', () => useSteeringTrial('swing', true));
   byId('steer-pd').addEventListener('click', () => useSteeringTrial('pd', true));
   openModelButton.addEventListener('click', () => modelAction(async () => {
     if (!modelImporter) {
       const {setupModelImporter} = await import('./model-import.js');
-      modelImporter = setupModelImporter({onApply: applyModel, getCurrentModel: () => currentModel});
+      modelImporter = setupModelImporter({onApply: applyArModel, getCurrentModel: () => currentModel});
     }
     modelImporter.open(openModelButton);
   }));
-  defaultModelButton.addEventListener('click', () => modelAction(() => applyModel(null)));
-  const editor = setupMapEditor({ onApply: applyCourse, getCurrentCourse: () => currentCourse });
+  async function applyArModel(model) {
+    await applyModel(model);
+    refreshAr();
+  }
+  function applyArCourse(course) {
+    applyCourse(course);
+    refreshAr();
+  }
+  defaultModelButton.addEventListener('click', () => modelAction(() => applyArModel(null)));
+  const editor = setupMapEditor({ onApply: applyArCourse, getCurrentCourse: () => currentCourse });
   openMapButton.addEventListener('click', () => {
     if (running) toggleRunning();
     if (mode === 'ai') trials.stop();
     editor.open();
   });
   defaultMapButton.addEventListener('click', () => {
-    applyCourse(null);
+    applyArCourse(null);
     openMapButton.focus();
   });
   exportButton.addEventListener('click', exportReadings);

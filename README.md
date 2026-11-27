@@ -39,6 +39,12 @@ P、I、D 教學卡會隨捲動逐張疊起，亦可以用磨砂玻璃 P／I／D
 
 [計一次右轉](https://line-follower-2627.pages.dev/#pid-example) 旁邊嘅 GIF 用 MuJoCo 重現例題嘅起始讀數同控制器狀態。第一格用 S6、S7 算出偏差 +4，同步顯示左輪 16、右輪 4。撳「播放 GIF」可以睇架車點樣向右修正返條線。
 
+## iPhone AR 預覽
+
+喺模擬視窗撳「AR 預覽」，可以擺原比例車模上枱，或者睇預設賽道嘅 15 秒循線重播。預設賽道嘅 AR 黑線加闊至 15 mm，較易喺實景入面睇清楚。
+
+手繪、匯入 SVG 或由相片轉成賽道後，先設定起點同方向並套用賽道。再開「AR 預覽」同撳「目前地圖同車模」嘅圖片。瀏覽器會將當時嘅黑白地圖同起步位置做成靜態 USDZ，按需要等比例縮至長邊約 90 cm。亦可以用「儲存 USDZ」喺 iPhone「檔案」開啟。賽道資料留喺瀏覽器。[開啟 AR 預覽](https://line-follower-2627.pages.dev/#ar-preview)
+
 ## 純 P 同 PD 搖頭比較
 
 [課堂基準](https://line-follower-2627.pages.dev/?trial=pd#simulator) 採用老師提供嘅最佳實車設定 P = 2、I = 0、車速指令 7。D 以 1.5 代表「1 點幾」。[加 P、減 D](https://line-follower-2627.pages.dev/?trial=swing#simulator) 用 P = 4、D = 0.01，純 P 試跑用 P = 4、D = 0。起步預設左偏 15 mm，亦可以揀置中，或向左、向右偏 5、10、15、25、40、55 mm。三個示範沿用所揀起點。手動同 AI 模式嘅摩打指令延遲都固定為 120 ms。馬達繼續依原有估算 90 ms 響應驅動 MuJoCo 輪軸。下載嘅 Main 保留原有硬編碼啟動增益，可在車載介面輸入老師嘅實測設定。
