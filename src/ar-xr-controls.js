@@ -9,13 +9,14 @@ const height = 664;
 const panelWidth = .58;
 const panelHeight = panelWidth * height / width;
 const headerHeight = 104;
-const bodyFont = '"Fira Sans", "PingFang HK", "Noto Sans TC", sans-serif';
-const monoFont = '"Fira Code", monospace';
 const ink = '#f4f7ff';
 const muted = '#b6c6de';
 const blue = '#a4c6ff';
 
 export function createXrCourseControls({ span, ranges, params, onChange, onReplay, onExit }) {
+  const fonts = getComputedStyle(document.documentElement);
+  const bodyFont = fonts.getPropertyValue('--body').trim();
+  const monoFont = fonts.getPropertyValue('--mono').trim();
   const canvas = document.createElement('canvas');
   canvas.width = width * 1.5;
   canvas.height = height * 1.5;

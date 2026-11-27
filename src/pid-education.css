@@ -42,8 +42,9 @@ main [id] { scroll-margin-block-start: 1rem; }
 .study-body { min-inline-size: 0; }
 .lesson-panel, .practice-panel { padding: clamp(1.25rem, 3.3vw, 3.3rem); }
 .study-body :is(h2,h3,h4) { text-wrap: balance; }
-.study-body h2 { display: block; font-size: clamp(1.65rem, 3vw, 2.8rem); font-weight: 740; line-height: 1.15; letter-spacing: -.02em; }
+.study-body h2 { display: block; font-size: clamp(1.65rem, 3vw, 2.8rem); font-weight: 690; line-height: 1.23; letter-spacing: -.02em; }
 .study-body h3 { font-size: clamp(1.15rem, 1.85vw, 1.6rem); line-height: 1.27; letter-spacing: -.01em; }
+.study-body :is(h2,h3):lang(zh) { letter-spacing: normal; }
 .study-body p, .lesson-experiments li, .practice-solution li { max-inline-size: 76ch; line-height: 1.72; }
 .study-body :is(h2,h3,h4) + p { margin-block-start: .85rem; }
 .study-body :is(p,ol) + p { margin-block-start: .7rem; }
