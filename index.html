@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light dark">
     <meta name="description" content="循線實驗室：用 MuJoCo 模擬 2627_CAR_v2，觀察八路感測器，學習 PID 算式，並完成中五工作紙計算。">
-    <meta name="theme-color" content="#164498">
+    <meta name="theme-color" content="#ffffff">
     <script src="/theme.js"></script>
     <title>循線實驗室 · Line Follower Lab</title>
     <link rel="icon" type="image/png" href="/src/assets/school-crest.png">
@@ -20,6 +20,7 @@
       <symbol id="ic-pause" viewBox="0 0 24 24"><path d="M6.5 5v14m11-14v14" stroke-width="4"/></symbol>
       <symbol id="ic-reset" viewBox="0 0 24 24"><path d="M3.5 6.5v5h5m-4.4-.4a8 8 0 1 1 1.8 6.5"/></symbol>
       <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.4"/><path d="M12 7v5l3.2 1.8"/></symbol>
+      <symbol id="ic-panel-close" viewBox="0 0 24 24"><rect x="2.5" y="4" width="19" height="16" rx="3"/><path d="M15.5 4v16M8.5 9l3 3-3 3"/></symbol>
       <symbol id="ic-tune" viewBox="0 0 24 24"><path d="M3 6h3m4 0h11M3 12h10m4 0h4M3 18h5m4 0h9"/><circle cx="8" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="10" cy="18" r="2"/></symbol>
       <symbol id="ic-telemetry" viewBox="0 0 24 24"><path d="M2.5 12h4l2.7-7.5 4.7 15 3-10 1.8 2.5h2.8"/></symbol>
       <symbol id="ic-track" viewBox="0 0 24 24"><path d="M3 18.5h4.8c2 0 2-3.5 4-3.5h1.7c2 0 2-4 4-4H21" stroke-dasharray="3 3"/><circle cx="4" cy="6" r="2"/><path d="M8 6h7"/></symbol>
@@ -81,7 +82,10 @@
           </div>
           <div class="stage">
             <div id="scene"></div>
-            <div class="stage-state" id="stage-state" role="status"><i aria-hidden="true"></i><span id="state-label">載入中</span></div>
+            <div class="stage-toolbar">
+              <div class="stage-state" id="stage-state" role="status"><i aria-hidden="true"></i><span id="state-label">載入中</span></div>
+              <button type="button" id="show-controller" aria-controls="manual-panel trial-panel" aria-expanded="false" hidden><svg aria-hidden="true"><use href="#ic-tune"/></svg><span>展開設定</span></button>
+            </div>
             <label class="trail-switch"><input id="trail" type="checkbox" checked><span class="switch-mark" aria-hidden="true"></span>行車軌跡</label>
             <span class="camera-hint" id="camera-hint" hidden>拖曳旋轉 · 滾動縮放</span>
           </div>
@@ -150,7 +154,10 @@
         </section>
 
         <aside class="panel controls" id="manual-panel" aria-labelledby="controls-title">
-          <div class="section-header"><h2 id="controls-title"><svg aria-hidden="true"><use href="#ic-tune"/></svg>控制參數</h2></div>
+          <div class="section-header">
+            <h2 id="controls-title"><svg aria-hidden="true"><use href="#ic-tune"/></svg>控制參數</h2>
+            <button type="button" data-collapse-controller aria-controls="manual-panel" aria-expanded="true" aria-label="收起設定面板" title="收起設定面板"><svg aria-hidden="true"><use href="#ic-panel-close"/></svg></button>
+          </div>
           <div class="control-body" id="control-body"></div>
           <section id="steering-experiment" class="firmware-settings steering-test" aria-labelledby="steering-title">
             <h3 id="steering-title">直路搖頭比較</h3>
@@ -167,7 +174,10 @@
           </section>
         </aside>
         <aside class="panel trial-panel" id="trial-panel" aria-labelledby="trial-title" hidden>
-          <div class="section-header"><h2 id="trial-title"><svg aria-hidden="true"><use href="#ic-tune"/></svg>自動調校 PID</h2></div>
+          <div class="section-header">
+            <h2 id="trial-title"><svg aria-hidden="true"><use href="#ic-tune"/></svg>自動調校 PID</h2>
+            <button type="button" data-collapse-controller aria-controls="trial-panel" aria-expanded="true" aria-label="收起設定面板" title="收起設定面板"><svg aria-hidden="true"><use href="#ic-panel-close"/></svg></button>
+          </div>
           <div class="trial-body">
             <p class="trial-intro">每輪由同一起點跑 24 秒。AI 比較循線表現，再選下一組參數。</p>
             <div class="trial-line"><span>基礎速度指令</span><strong id="trial-speed">—</strong></div>

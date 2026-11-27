@@ -28,10 +28,26 @@ export function setupPidLesson(container) {
       <p>${say('課堂車讀到黑線係 1，白色反光底係 0。按第 5 章工作紙嘅安裝方向，沿架車前進方向望，S1 喺左，S8 喺右。', 'On the classroom car, black tape reads 1 and the reflective white surface reads 0. With the mounting shown in the Chapter 5 worksheet, S1 is on the left and S8 on the right, facing the direction of travel.')}</p>
       <section class="sensor-reader" id="probe-lab" aria-labelledby="probe-lab-title" tabindex="-1">
         <h4 id="probe-lab-title">${say('手動探頭實驗', 'Manual sensor lab')}</h4>
-        <p id="probe-hint">${say('撳 S1 至 S8 揀邊幾個探頭見到黑線。1 係黑線，0 係白底。', 'Toggle S1 to S8 to choose which sensors see the black line. A 1 means black tape and a 0 means white.')}</p>
-        <div class="probe-strip" role="group" aria-label="${say('選擇見到黑線嘅探頭', 'Select sensors over black tape')}" aria-describedby="probe-hint">
-          ${weights.map((_, i) => `<button type="button" class="probe-toggle" data-probe="${i}" aria-label="S${i + 1}" aria-pressed="false"><span class="probe-name">S${i + 1}</span><span class="probe-value" data-channel-reading data-no-i18n>—</span></button>`).join('')}
-        </div>
+        <p id="probe-hint">${say('撳感測板或下面嘅 S1 至 S8，模擬邊一路見到黑線。見到黑線嗰路會亮燈、讀 1；白底讀 0。', 'Click the board or an S1–S8 key to put black tape under that probe. Its lamp lights and the channel reads 1. A white surface reads 0.')}</p>
+        <figure class="probe-board" data-face="indicators">
+          <div class="probe-board-toolbar">
+            <label for="probe-face">${say('感測板視角', 'Sensor board view')}</label>
+            <select id="probe-face">
+              <option value="indicators">${say('板面 · 指示燈', 'Top · indicators')}</option>
+              <option value="optics">${say('板底 · 光學探頭', 'Underside · optical probes')}</option>
+            </select>
+          </div>
+          <div class="probe-strip" role="group" aria-label="${say('選擇見到黑線嘅探頭', 'Select sensors over black tape')}" aria-describedby="probe-hint">
+            ${weights.map((_, i) => `<button type="button" class="probe-toggle" data-probe="${i}" aria-label="S${i + 1}" aria-pressed="false">
+              <span class="board-channel" aria-hidden="true"><span class="board-lamp"></span></span>
+              <span class="board-key"><span class="probe-name">S${i + 1}</span><span class="probe-value" data-channel-reading data-no-i18n>—</span></span>
+            </button>`).join('')}
+          </div>
+          <figcaption>
+            <span data-face-note="indicators">${say('2627_CAR_v2 板面。車頭向上 ↑，S1 喺車身左邊。', 'Top of the 2627_CAR_v2 board. Forward is up ↑. S1 is on the car’s left.')}</span>
+            <span data-face-note="optics" hidden>${say('從車底望，車頭向下 ↓。每對圓形元件屬於同一路探頭，光圈標示你揀咗見黑線嘅位置。', 'Looking up from below, forward is down ↓. Each pair of round optical elements is one channel. Rings mark the probes you placed over black tape.')}</span>
+          </figcaption>
+        </figure>
         <div data-decoded>
           <dl class="sensor-result" aria-live="polite">
             <div><dt>${say('原始 byte（bit 7 → 0）', 'Register byte (bit 7 → 0)')}</dt><dd data-register></dd></div>

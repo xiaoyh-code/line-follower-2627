@@ -1,0 +1,116 @@
+.workspace-row[data-settings-collapsed] { grid-template-columns: minmax(0, 1fr); }
+.workspace-row[data-settings-collapsed] > aside { display: none; }
+
+.stage-toolbar {
+  position: absolute;
+  inset: clamp(.65rem, 2vw, 1rem) clamp(.65rem, 2vw, 1rem) auto;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: .5rem;
+  pointer-events: none;
+}
+.stage-toolbar .stage-state { position: static; }
+
+#show-controller, [data-collapse-controller] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: 2.75rem;
+  min-block-size: 2.75rem;
+  border: 1px solid var(--input-edge);
+  border-radius: .7rem;
+  color: var(--text);
+  background: var(--surface-high);
+}
+#show-controller {
+  pointer-events: auto;
+  gap: .45rem;
+  padding: .35rem .8rem;
+  font-size: .875rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+[data-collapse-controller] { flex: none; padding: .4rem; }
+.workspace-row > aside > .section-header {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 2;
+  flex-shrink: 0;
+  gap: .4rem;
+  border-radius: .8rem .8rem 0 0;
+  background: var(--surface);
+}
+.workspace-row > aside {
+  align-self: start;
+  border-radius: .8rem;
+}
+.workspace-row > aside :is(input, select, button, a) { scroll-margin-block-start: 4rem; }
+
+.camera-options { border-radius: .65rem; }
+.camera-options button { border-radius: .4rem; }
+.stage-state, .trail-switch, .camera-hint { border-radius: .65rem; }
+
+/* Surfaces over moving or dense content use a stronger tint for readability. */
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) and (color: color-mix(in srgb, red, blue)) {
+  .workspace-row > aside, #show-controller,
+  .study-index, .study-index-toggle, .camera-options, .stage-state, .trail-switch, .camera-hint {
+    background-color: color-mix(in srgb, var(--surface) var(--glass-opacity, 80%), transparent);
+    background-image: var(--glass-reflection, linear-gradient(transparent, transparent)),
+      radial-gradient(ellipse 110% 14rem at 95% 0%, color-mix(in srgb, var(--accent) 24%, transparent), transparent 72%),
+      linear-gradient(130deg, color-mix(in srgb, var(--accent) 10%, transparent), transparent 36%, color-mix(in srgb, var(--surface-high) 32%, transparent));
+    border-color: color-mix(in srgb, var(--input-edge) 76%, transparent);
+    -webkit-backdrop-filter: blur(14px) saturate(125%);
+    backdrop-filter: blur(14px) saturate(125%);
+    box-shadow: inset 0 1.5px 0 rgb(255 255 255 / .42), inset -1px 0 0 rgb(255 255 255 / .18), 0 5px 18px rgb(7 20 43 / .09);
+  }
+  .workspace-row > aside { --glass-opacity: 68%; }
+  #show-controller, .stage-state, .camera-hint, .trail-switch { --glass-opacity: 88%; }
+  .study-index, .study-index-toggle { --glass-opacity: 78%; }
+  .camera-options button[aria-pressed=true] {
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / .35);
+  }
+  [data-collapse-controller] { background: color-mix(in srgb, var(--surface-high) 68%, transparent); }
+  .workspace-row > aside > .section-header {
+    background: linear-gradient(120deg, color-mix(in srgb, var(--surface-high) 82%, transparent), color-mix(in srgb, var(--surface) 60%, transparent));
+    -webkit-backdrop-filter: blur(10px) saturate(120%);
+    backdrop-filter: blur(10px) saturate(120%);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / .38);
+  }
+}
+
+#show-controller:hover, [data-collapse-controller]:hover { background-color: var(--control-hover); }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .workspace-row > aside:hover {
+    --glass-reflection: radial-gradient(ellipse 12rem 7rem at var(--glass-pointer, 95% 0%), color-mix(in srgb, var(--accent) 10%, transparent), transparent 90%);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .workspace-row > aside:not([hidden]), #show-controller:not([hidden]) {
+    animation: controller-reveal .16s ease-out;
+  }
+  @keyframes controller-reveal {
+    from { opacity: .25; transform: translateY(-.2rem); }
+    to { opacity: 1; transform: none; }
+  }
+}
+@media (prefers-reduced-transparency: reduce), (forced-colors: active), (prefers-contrast: more) {
+  .workspace-row > aside, .workspace-row > aside > .section-header, #show-controller, [data-collapse-controller],
+  .study-index, .study-index-toggle, .camera-options, .stage-state, .trail-switch, .camera-hint {
+    background: var(--surface);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow: none;
+    border-color: var(--input-edge);
+  }
+}
+
+@media (forced-colors: active) {
+  .camera-options button[aria-pressed=true] {
+    outline: 2px solid Highlight;
+    outline-offset: -3px;
+    box-shadow: none;
+  }
+}

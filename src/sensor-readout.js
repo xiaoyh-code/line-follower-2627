@@ -23,6 +23,14 @@ export function bindSensorReadout(section, pid) {
   const register = result.querySelector('[data-register]');
   const serial = result.querySelector('[data-serial]');
   const step = section.querySelector('#probe-step');
+  const board = section.querySelector('.probe-board');
+  const face = board.querySelector('#probe-face');
+  face.addEventListener('change', () => {
+    board.dataset.face = face.value;
+    for (const note of board.querySelectorAll('[data-face-note]')) {
+      note.hidden = note.dataset.faceNote !== face.value;
+    }
+  });
   let decoded;
 
   function update() {
@@ -34,7 +42,7 @@ export function bindSensorReadout(section, pid) {
     toggles.forEach((button, i) => {
       const bit = decoded?.channels[i];
       readings[i].textContent = bit ?? '—';
-      button.setAttribute('aria-pressed', String(bit === '1'));
+      button.setAttribute('aria-pressed', bit === undefined ? 'mixed' : String(bit === '1'));
     });
     if (!decoded) return;
     black.textContent = decoded.black.join(', ') || '∅';

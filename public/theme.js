@@ -13,7 +13,6 @@
     const theme = preference === 'system' ? (system.matches ? 'dark' : 'light') : preference;
     if (root.dataset.theme === theme) return;
     root.dataset.theme = theme;
-    document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#164498' : '#102958';
     document.dispatchEvent(new Event('themechange'));
   }
 

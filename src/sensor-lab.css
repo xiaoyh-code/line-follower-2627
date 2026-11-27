@@ -1,44 +1,73 @@
 #probe-lab { container: workbench / inline-size; }
 #probe-lab h4 { margin-block-end: .35rem; }
 #probe-lab h4 + p { margin-block-start: 0; }
+/* These two orthographic renders use the four line_follower solids from
+   2627_CAR_v2. Each column spans one 11.5 mm pitch in the 92 mm view. */
+.probe-board {
+  max-inline-size: 38rem;
+  margin: 1.15rem 0;
+}
+.probe-board-toolbar {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: .25rem .75rem; margin-block-end: .45rem;
+}
+.probe-board-toolbar label { font-size: .9rem; font-weight: 600; }
+.probe-board-toolbar select {
+  max-inline-size: 100%; min-block-size: 2.75rem; padding: .3rem .55rem;
+  border: 1px solid var(--input-edge); border-radius: .4rem;
+  color: var(--text); background: var(--surface); font: inherit; font-size: .85rem;
+}
 .probe-strip {
-  display: grid;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
-  gap: .375rem;
-  margin-block: 1rem;
+  display: grid; grid-template-columns: repeat(8, minmax(0,1fr));
+  background: url('./assets/sensor-board-indicators.webp') center top / 100% auto no-repeat;
+}
+.probe-board[data-face=optics] .probe-strip {
+  background-image: url('./assets/sensor-board-optics.webp');
 }
 .probe-toggle {
-  display: grid;
-  place-content: center;
-  justify-items: center;
-  gap: .22rem;
-  min-inline-size: 0;
-  min-block-size: 3.75rem;
-  padding: .48rem .15rem;
-  border: 1px solid var(--input-edge);
-  border-radius: .32rem;
-  background: var(--surface-high);
-  color: var(--text);
-  font-family: var(--mono);
-  cursor: pointer;
+  display: grid; grid-template-rows: auto 1fr; align-content: start;
+  min-inline-size: 0; padding: 0; border: 0; background: transparent;
+  color: var(--text); font-family: var(--mono); cursor: pointer;
 }
+.board-channel {
+  display: block; position: relative; inline-size: 100%; aspect-ratio: 138 / 504;
+}
+.board-lamp {
+  position: absolute; inset-inline-start: 50%; inset-block-start: 12.945%;
+  transform: translate(-50%,-50%); inline-size: 29%; block-size: 4%;
+  border-radius: 12%;
+}
+/* The lit lens is in the same place and colour as the simulator's LED core. */
+.probe-toggle[aria-pressed=true] .board-lamp {
+  background: #eafff7; box-shadow: 0 0 0 1px #55f1db, 0 0 .55rem .12rem #55f1db;
+}
+.probe-board[data-face=optics] .board-lamp {
+  inset-block-start: 84.659%; inline-size: 48%; block-size: auto; aspect-ratio: 1.08;
+  border-radius: 50%;
+}
+.probe-board[data-face=optics] .probe-toggle[aria-pressed=true] .board-lamp {
+  background: transparent; box-shadow: 0 0 0 2px #adffef, 0 0 .35rem #55f1db;
+}
+.board-key {
+  display: grid; place-content: center; justify-items: center; gap: .18rem;
+  min-block-size: 3.2rem; margin-inline: 2px; padding-block: .3rem;
+  border: 1px solid var(--input-edge); border-radius: .32rem; background: var(--surface-high);
+}
+.probe-toggle[aria-pressed=true] .board-key { color: var(--on-signal); background: var(--signal); border-color: var(--signal); }
 @media (hover: hover) {
-  .probe-toggle:hover { border-color: var(--signal); }
-  .probe-toggle[aria-pressed=false]:hover { background: var(--control-hover); }
-}
-.probe-toggle[aria-pressed=true] {
-  color: var(--on-signal);
-  background: var(--signal);
-  border-color: var(--signal);
+  .probe-toggle:hover .board-key { border-color: var(--signal); }
+  .probe-toggle[aria-pressed=false]:hover .board-key { background: var(--control-hover); }
 }
 .probe-name { font-size: .78rem; }
-.probe-value { font-size: 1.12rem; font-weight: 700; line-height: 1.1; }
+.probe-value { font-size: 1.08rem; font-weight: 700; line-height: 1.1; }
+.probe-board figcaption { color: var(--muted); font-size: .85rem; line-height: 1.5; margin-block-start: .48rem; }
 #probe-lab [data-register], #probe-lab [data-serial] {
   font-size: clamp(1rem, 3.4cqi, 1.4rem);
   color: var(--text);
 }
 @media (forced-colors: active) {
-  .probe-toggle[aria-pressed=true] { border: 3px double ButtonText; }
+  .probe-toggle[aria-pressed=true] .board-key { border: 3px double ButtonText; }
+  .probe-toggle[aria-pressed=true] .board-lamp { outline: 2px solid Highlight; }
 }
 .probe-entry { margin-block: .85rem 0; }
 .probe-entry summary { display: list-item; min-block-size: 2.7rem; padding-block: .65rem; cursor: pointer; font-weight: 600; }
@@ -59,6 +88,6 @@
 #probe-tick { padding: 0; margin-block-start: .8rem; }
 #probe-wheel-report { display: inline-block; padding-inline-start: .5rem; font: 650 .9rem/1.6 var(--mono); color: var(--signal); }
 @container workbench (max-width: 25rem) {
-  .probe-strip { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .board-key { margin-inline: 1px; }
   #probe-lab .sensor-result { grid-template-columns: 1fr; }
 }
