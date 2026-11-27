@@ -134,6 +134,10 @@ main [id] { scroll-margin-block-start: 1rem; }
 .firmware-instructions { padding-inline-start: 1.55rem; line-height: 1.7; max-inline-size: 80ch; }
 .firmware-instructions li { padding-inline-start: .25rem; margin-block: .4rem; }
 .firmware-resources .firmware-note { margin-block-start: 1rem; }
+#sketch-preview { margin-block: -1rem 2rem; }
+#sketch-preview summary { min-block-size: 2.75rem; padding-block: .6rem; font-weight: 600; cursor: pointer; }
+#sketch-preview .sensor-fields { margin-block: .35rem .75rem; }
+#sketch-preview pre { max-block-size: min(65vh, 35rem); margin-block: .5rem; }
 #sensor-order-guide a { color: var(--signal); text-underline-offset: .2em; }
 
 .sensor-code {

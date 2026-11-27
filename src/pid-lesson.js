@@ -1,5 +1,6 @@
 import { registerTranslations, t } from './i18n.js';
 import { bindSensorReadout } from './sensor-readout.js';
+import { analogLabHtml, setupAnalogLab } from './analog-lab.js';
 import { gainDiagram } from './pid-diagrams.js';
 import { setupProbeSteps } from './probe-step-controls.js';
 import './sensor-lab.css';
@@ -79,6 +80,7 @@ export function setupPidLesson(container) {
           <summary><span>${say('上一步 PID 計算', 'Last PID update')}</span> <span id="probe-wheel-report" aria-live="polite" data-no-i18n></span></summary>
           <div id="probe-pid-view"></div>
         </details>
+        ${analogLabHtml(say)}
       </section>
       <p>${say('I²C 嘅狀態寄存器（地址 0x5D，寄存器編號 5）一次傳回八路讀數，共一個 byte。Library 將佢存入 StateReg_OriginData，再用以下一行拆出每個通道。', 'The sensor at I²C address 0x5D returns all eight channels in one byte from register 5. The library stores the byte in StateReg_OriginData and extracts each channel with this line.')}</p>
       <pre class="sensor-code" data-no-i18n><code>obj-&gt;state_all_ch[len] = (obj-&gt;StateReg_OriginData &gt;&gt; len) &amp; 0x01;</code></pre>
@@ -209,4 +211,5 @@ Serial.println();</code></pre>
   container.innerHTML = html;
   const sensors = container.querySelector('#sensor-order-guide');
   bindSensorReadout(sensors, setupProbeSteps(sensors));
+  setupAnalogLab(sensors.querySelector('#analog-lab'));
 }

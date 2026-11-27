@@ -5,6 +5,9 @@
 /downloads/01_Digital_States.ino
   Content-Type: application/octet-stream
   Content-Disposition: attachment; filename="01_Digital_States.ino"
+/downloads/02_Analog_Thresholds.ino
+  Content-Type: application/octet-stream
+  Content-Disposition: attachment; filename="02_Analog_Thresholds.ino"
 /downloads/Line_Follower_main.ino
   Content-Type: application/octet-stream
   Content-Disposition: attachment; filename="Line_Follower_main.ino"

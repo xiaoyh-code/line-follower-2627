@@ -1,0 +1,82 @@
+#analog-lab {
+  margin-block-start: 1rem;
+  border-block-start: 1px solid var(--border);
+}
+#analog-lab > summary {
+  min-block-size: 2.75rem;
+  padding-block: .65rem;
+  color: var(--signal);
+  font-weight: 600;
+  cursor: pointer;
+}
+.analog-instrument {
+  display: grid;
+  max-inline-size: 38rem;
+  gap: 1rem;
+  margin-block: 1rem;
+  padding: clamp(.75rem, 3cqi, 1.25rem);
+  border: 1px solid var(--border);
+  border-radius: .5rem;
+  background: var(--surface);
+}
+.analog-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: .35rem .7rem;
+}
+.analog-field label { font-weight: 600; }
+.analog-number { font: 600 1.1rem/1.4 var(--mono); color: var(--signal); }
+.analog-field input {
+  grid-column: 1 / -1;
+  width: 100%;
+  min-height: 2.75rem;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.analog-anchors {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  gap: .6rem;
+  color: var(--muted);
+  font-size: .875rem;
+}
+.analog-anchors span { display: inline-flex; align-items: center; gap: .35rem; }
+.analog-anchors span::before {
+  content: '';
+  width: .7rem;
+  height: .7rem;
+  background: white;
+  border: 1px solid var(--input-edge);
+  border-radius: 2px;
+}
+.analog-anchors span:last-child::before { background: #20242b; }
+.analog-result {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: .3rem 1rem;
+  border-block-start: 1px solid var(--border);
+  padding-block-start: .8rem;
+}
+.analog-result [data-comparison] { font: 600 1rem/1.4 var(--mono); }
+.analog-result strong { color: var(--signal); }
+.analog-serial {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: .3rem .85rem;
+  font-size: .875rem;
+  color: var(--muted);
+}
+.analog-serial samp { color: var(--text); font-size: 1rem; }
+.analog-example {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 2.75rem;
+  font: 600 .9rem/1.5 var(--mono);
+  overflow-wrap: anywhere;
+}

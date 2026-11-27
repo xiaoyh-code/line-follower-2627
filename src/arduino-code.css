@@ -1,0 +1,20 @@
+/* Arduino IDE 2.x default and dark token hues, adjusted for the lesson's backgrounds. */
+.arduino-code {
+  --ino-call: #f39c12;
+  --ino-type: #17adb2;
+  --ino-control: #c586c0;
+  --ino-literal: #7fcbcd;
+  --ino-comment: #95a5a6;
+}
+:root[data-theme="light"] .arduino-code {
+  --ino-call: #b04700;
+  --ino-type: #006f74;
+  --ino-control: #596f00;
+  --ino-literal: #005c5f;
+  --ino-comment: #5b696a;
+}
+.arduino-code :is(.ino-object, .ino-function) { color: var(--ino-call); }
+.arduino-code .ino-type { color: var(--ino-type); }
+.arduino-code .ino-control { color: var(--ino-control); }
+.arduino-code .ino-literal { color: var(--ino-literal); }
+.arduino-code .ino-comment { color: var(--ino-comment); }

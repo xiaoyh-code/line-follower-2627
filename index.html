@@ -232,10 +232,19 @@
             <p>用課堂 ESP32 範例配合兩個程式庫，對照實車點樣讀八路探頭，同埋點樣將 PID 修正送去 M3、M4。</p>
             <ul class="firmware-files">
               <li><a href="/downloads/01_Digital_States.ino" download="01_Digital_States.ino"><svg aria-hidden="true"><use href="#ic-download"/></svg><span data-no-i18n>01_Digital_States.ino</span></a><span>原裝感測器讀數範例</span></li>
+              <li><a href="/downloads/02_Analog_Thresholds.ino" download="02_Analog_Thresholds.ino"><svg aria-hidden="true"><use href="#ic-download"/></svg><span data-no-i18n>02_Analog_Thresholds.ino</span></a><span>八路反射讀數同板內門檻</span></li>
               <li><a href="/downloads/Line_Follower_main.ino" download="Line_Follower_main.ino"><svg aria-hidden="true"><use href="#ic-download"/></svg><span data-no-i18n>Line_Follower_main.ino</span></a><span>循線 PID 範例</span></li>
               <li><a href="/downloads/LineFollowerLearn8CH.zip" download><svg aria-hidden="true"><use href="#ic-download"/></svg><span data-no-i18n>LineFollowerLearn8CH.zip</span></a><span>八路感測板程式庫</span></li>
               <li><a href="/downloads/MotorEncoderBoard.zip" download><svg aria-hidden="true"><use href="#ic-download"/></svg><span data-no-i18n>MotorEncoderBoard.zip</span></a><span>編碼摩打板程式庫</span></li>
             </ul>
+            <details id="sketch-preview">
+              <summary>預覽 Arduino 程式</summary>
+              <div class="sensor-fields">
+                <label><span>選擇程式</span><select id="sketch-file" data-no-i18n></select></label>
+              </div>
+              <p role="status" hidden></p>
+              <pre class="sensor-code" tabindex="0" role="region" aria-label="程式原文" hidden><code data-no-i18n></code></pre>
+            </details>
             <h3>喺 Arduino IDE 開啟</h3>
             <ol class="firmware-instructions">
               <li>用 Boards Manager 安裝 Espressif Systems 嘅 esp32，揀 ESP32 Dev Module。</li>

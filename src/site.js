@@ -7,11 +7,15 @@ import { mountPidPractice } from './pid-practice.js';
 import { mountBom } from './bom.js';
 import { setupControllerPanel } from './controller-panel.js';
 import { setupLessonIndex } from './lesson-index.js';
+import { highlightArduino } from './arduino-code.js';
+import { setupSketchPreview } from './sketch-preview.js';
 
 mountBom(document.getElementById('bom'));
 startLanguage();
 setupPidLesson(document.getElementById('pid-lesson'));
 mountPidPractice(document.getElementById('worksheet'));
+document.querySelectorAll('#pid-lesson .sensor-code code:not(.arduino-code), .practice-code code').forEach(highlightArduino);
+setupSketchPreview(document.getElementById('arduino'));
 setupLessonIndex(document.querySelector('.study-layout'));
 setupControllerPanel(document.querySelector('.workspace-row'));
 

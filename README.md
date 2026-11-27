@@ -27,6 +27,8 @@ npm run dev
 
 [手動探頭實驗](https://line-follower-2627.pages.dev/#probe-lab) 入面嘅八路感測板同 S1 至 S8 按鈕共用一組讀數。可以切換「板面 · 指示燈」同「板底 · 光學探頭」，對照 Fusion 車模上每對光學元件同板面燈號。撳板上其中一路或下面嘅 S1 至 S8，就會即時更新原始 byte 同 Serial Monitor。沿車頭前進方向望，S1 喺最左，S8 喺最右，黑線為 1。原始 byte 以 bit 7 至 bit 0 排列，Serial Monitor 以 S1 至 S8 排列。每撳單步就用當時選定嘅通道同增益計 10 ms。中途轉探頭會保留上一步偏差同積分。練習預設採用教材例題嘅 P = 1、I = 0.5、D = 0.005、基礎速度 10，使用自己嘅時間同 PID 記錄。重設記錄後可用同一組讀數由頭比較。
 
+[模擬反射讀數彩蛋](https://line-follower-2627.pages.dev/#analog-lab) 用課堂實測嘅白底約 3500、黑線約 3900 做參考。兩者中點 3700 係練習嘅起始門檻。調校讀數或門檻，就可以睇到同一個讀數點樣判成白底 0 或黑線 1。
+
 喺手動模式撳「單步 +10 ms」，會由就緒或暫停狀態向前行一個控制週期。取樣表由車頭左至右列出通道、0/1 同權重，再將當次嘅增益、上次偏差同積分代入算式，列出限幅前後嘅修正及左右輪整數指令。切換播放倍速唔會改變單步長度。暫停時改增益，新設定由下一個控制週期生效。
 
 學生可以喺 [PID 原理](https://line-follower-2627.pages.dev/#pid-lesson) 由八路權重算偏差，逐項理解 P、I、D，再用「拆解今次 PID 修正」比較每次模擬更新嘅數值。[工作紙練習](https://line-follower-2627.pages.dev/#worksheet) 收錄中五第 5 章第 19、20 題，附原工作紙第 6 頁 PDF。第 19 題按題意用 0.10 s、保留小數，模擬控制用 0.010 s 同整數摩打指令。
@@ -71,9 +73,11 @@ Kp 可試 0–8、Ki 0–2、Kd 0–2。Main 按實際秒數計 D，模擬用固
 
 指定嘅 `Downloads/F5_Line_Follower 2/Line_Follower_mian` 係 Wi-Fi 網頁測試。循線邏輯來自旁邊 `Downloads/F5_Line_Follower/Line_Follower_mian` 嘅完整程式，同 `LineFollowerUpload460800` 嘅 TT 診斷版對照。後者用 M3 左輪、M4 右輪，選 TT 模式 1。舊 ZIP 用 JGB37 模式 3；其 3960 計數預設用於距離換算。
 
-[Arduino 下載區](https://line-follower-2627.pages.dev/#arduino) 包括原裝讀數範例 01_Digital_States.ino、課堂 TT 版本嘅完整 .ino、LineFollowerLearn8CH ZIP 同 MotorEncoderBoard ZIP。實車範例開機時會產生本機 Wi-Fi 密碼，用 115200 baud 開 Serial Monitor 就可以睇到。發佈前以全新 sketchbook 安裝提供嘅兩個 ZIP，使用 Espressif ESP32 Arduino core 3.3.12 及 ESP32 Dev Module 編譯成功。
+[Arduino 下載區](https://line-follower-2627.pages.dev/#arduino) 可以用 Arduino IDE 配色預覽或下載三份程式，包括數碼讀數範例 `01_Digital_States.ino`、反射讀數同板內門檻範例 `02_Analog_Thresholds.ino`，以及課堂循線主程式。兩個程式庫 ZIP 亦可喺同一區下載。實車範例開機時會產生本機 Wi-Fi 密碼，用 115200 baud 開 Serial Monitor 就可以睇到。發佈前以全新 sketchbook 安裝提供嘅兩個 ZIP，使用 Espressif ESP32 Arduino core 3.3.12 及 ESP32 Dev Module 編譯成功。
 
 感測程式庫嘅 `detect_state_all_channel_IIC` 會讀地址 0x5D 嘅寄存器 5，再將 `(raw >> i) & 1` 放入 `state_all_ch[i]`。bit 0 對應 S1，bit 7 對應 S8。課堂第 5 章工作紙記錄向車頭前望時 S1 在左、S8 在右。舊 sketch 嘅左右註解相反，公開範例嘅註解同車載網頁通道排列已按課堂安裝校正。
+
+讀反射光暗度時，`get_AnalogVoltage_all_channel_IIC(&linefollower)` 會由寄存器 6 讀 16 bytes，每兩個 bytes 合成一路原始值，`AnalogVoltage_all_ch[0..7]` 對應 S1 至 S8。原裝 `02_Analog_Thresholds` 亦由寄存器 22 讀出板內各路門檻。Serial Monitor 以 115200 baud 顯示每一路嘅「讀數 / 板內門檻」。
 
 課堂板按老師提供嘅極性判斷黑線，黑色讀 1，白底讀 0。ZIP 原裝範例 `01_Digital_States.ino` 用 115200 baud，每 200 ms 由 S1 至 S8 印一次八路原始值。見到 `1 0 0 0 1 0 0 0` 即 S1、S5 黑色，另外六路白色，寄存器為 `0x11`。如果係直接寫寄存器數值 `0b10001000`（`0x88`），即 S4、S8 黑色。原裝 ZIP 嘅 I²C 註解亦寫明偵測到線時為高電平，讀取函式會逐 bit 拆出寄存器數值。原裝讀數範例亦可喺網站獨立下載。
 
