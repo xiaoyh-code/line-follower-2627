@@ -33,6 +33,10 @@ npm run dev
 
 學生可以喺 [PID 原理](https://line-follower-2627.pages.dev/#pid-lesson) 由八路權重算偏差，逐項理解 P、I、D，再用「拆解今次 PID 修正」比較每次模擬更新嘅數值。[工作紙練習](https://line-follower-2627.pages.dev/#worksheet) 收錄中五第 5 章第 19、20 題，附原工作紙第 6 頁 PDF。第 19 題按題意用 0.10 s、保留小數，模擬控制用 0.010 s 同整數摩打指令。
 
+[黑線同八路探頭俯視示範](https://line-follower-2627.pages.dev/#error-demo) 喺偏差算式旁邊。揀一個黑線位置，對照亮燈通道、權重平均數同左右輪指令。切換偏向左或右，可以比較偏差正負同修正方向，最後一格就示範探頭失線。
+
+[計一次右轉](https://line-follower-2627.pages.dev/#pid-example) 旁邊嘅 GIF 用 MuJoCo 重現例題嘅起始讀數同控制器狀態。第一格用 S6、S7 算出偏差 +4，同步顯示左輪 16、右輪 4。撳「播放 GIF」可以睇架車點樣向右修正返條線。
+
 ## 純 P 同 PD 搖頭比較
 
 [課堂基準](https://line-follower-2627.pages.dev/?trial=pd#simulator) 採用老師提供嘅最佳實車設定 P = 2、I = 0、車速指令 7。D 以 1.5 代表「1 點幾」。[加 P、減 D](https://line-follower-2627.pages.dev/?trial=swing#simulator) 用 P = 4、D = 0.01，純 P 試跑用 P = 4、D = 0。起步預設左偏 15 mm，亦可以揀置中，或向左、向右偏 5、10、15、25、40、55 mm。三個示範沿用所揀起點。手動同 AI 模式嘅摩打指令延遲都固定為 120 ms。馬達繼續依原有估算 90 ms 響應驅動 MuJoCo 輪軸。下載嘅 Main 保留原有硬編碼啟動增益，可在車載介面輸入老師嘅實測設定。

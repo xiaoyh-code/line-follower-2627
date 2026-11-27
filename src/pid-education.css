@@ -54,6 +54,26 @@ main [id] { scroll-margin-block-start: 1rem; }
 .lesson-weights :is(th,td) { padding: .45rem .1rem; border: 1px solid var(--border); font: 550 clamp(.72rem, 1.4vw, .96rem) var(--mono); }
 .lesson-weights th { color: var(--muted); background: var(--surface-high); }
 .lesson-weights td { color: var(--signal); }
+:is(#pid-sensing, #pid-example) { container: illustration / inline-size; }
+:is(.sensing-layout, .worked-layout) { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 1.4rem; margin-block-start: .85rem; }
+.sensing-demo-link { color: var(--signal); text-underline-offset: .2em; }
+@container illustration (min-width: 47.5rem) {
+  .sensing-layout { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); column-gap: clamp(1.5rem, 3.5cqi, 2.5rem); }
+  .worked-layout { grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr); column-gap: clamp(1.5rem, 3.5cqi, 2.5rem); }
+}
+.worked-replay {
+  min-inline-size: 0; margin: 0; padding: clamp(.75rem, 2cqi, 1rem);
+  border: 1px solid var(--border); border-radius: .65rem; background: var(--surface-high);
+}
+.worked-replay figcaption { display: grid; gap: .35rem; margin-block-end: .65rem; line-height: 1.5; }
+.worked-replay figcaption span { color: var(--muted); font-size: .875rem; }
+.worked-replay img { display: block; inline-size: 100%; block-size: auto; border: 1px solid var(--input-edge); border-radius: .4rem; }
+.worked-replay button {
+  min-block-size: 2.75rem; margin-block-start: .6rem; padding: .35rem .7rem;
+  border: 1px solid var(--input-edge); border-radius: .35rem; background: var(--surface); font-weight: 600;
+}
+.worked-replay button:hover { background: var(--control-hover); }
+.worked-replay-status { display: block; margin-block-start: .45rem; color: var(--warning); font-size: .875rem; }
 .lesson-gains { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,14.5rem),1fr)); gap: 1.5rem; margin-block-start: 1.5rem; }
 .lesson-gain { padding-block-start: .75rem; border-block-start: 1px solid var(--border); min-inline-size: 0; }
 .lesson-gain h4 { display: flex; gap: .55rem; align-items: baseline; margin: 0; font-size: 1rem; }

@@ -1,6 +1,7 @@
-import { registerTranslations, t } from './i18n.js';
+import { onLanguageChange, registerTranslations, t } from './i18n.js';
 import { bindSensorReadout } from './sensor-readout.js';
 import { analogLabHtml, setupAnalogLab } from './analog-lab.js';
+import { errorDemoHtml, setupErrorDemo } from './error-demo.js';
 import { gainDiagram } from './pid-diagrams.js';
 import { setupProbeSteps } from './probe-step-controls.js';
 import './sensor-lab.css';
@@ -99,16 +100,21 @@ Serial.println();</code></pre>
 
     <section class="lesson-section" id="pid-sensing" tabindex="-1" aria-labelledby="pid-sensing-title">
       <h3 id="pid-sensing-title">${say('由八盞燈計出偏差', 'Find the error from the eight lamps')}</h3>
-      <p>${say('模擬畫面會亮着讀到黑線（原始值為 1）嘅通道。將呢啲通道嘅權重加埋，再除以佢哋嘅數目，就得到循線偏差 e。', 'The simulator highlights channels over black tape (raw value 1). Add their weights and divide by the number of these channels to get the line error, e.')}</p>
-      <table class="lesson-weights">
-        <caption>${say('各通道嘅權重', 'Weight of each sensor channel')}</caption>
-        <thead><tr>${weights.map((_, i) => `<th scope="col">S${i + 1}</th>`).join('')}</tr></thead>
-        <tbody><tr>${weights.map(w => `<td>${sign(w)}</td>`).join('')}</tr></tbody>
-      </table>
-      <p>${say('S4、S5 同時亮起，黑線喺中間。', 'With S4 and S5 lit, the line is centred.')}</p>
-      ${equation`e_k=\dfrac{-1+1}{2}=0`}
-      <p>${say('換成 S6、S7 亮起，黑線喺車頭右邊。', 'With S6 and S7 lit, the line is to the right of the nose.')}</p>
-      ${equation`e_k=\dfrac{3+5}{2}=+4`}
+      <div class="sensing-layout">
+        <div>
+          <p>${say('模擬畫面會亮着讀到黑線（原始值為 1）嘅通道。將呢啲通道嘅權重加埋，再除以佢哋嘅數目，就得到循線偏差 e。', 'The simulator highlights channels over black tape (raw value 1). Add their weights and divide by the number of these channels to get the line error, e.')}</p>
+          <table class="lesson-weights">
+            <caption>${say('各通道嘅權重', 'Weight of each sensor channel')}</caption>
+            <thead><tr>${weights.map((_, i) => `<th scope="col">S${i + 1}</th>`).join('')}</tr></thead>
+            <tbody><tr>${weights.map(w => `<td>${sign(w)}</td>`).join('')}</tr></tbody>
+          </table>
+          <p>${say('S4、S5 同時亮起，黑線喺中間。', 'With S4 and S5 lit, the line is centred.')}</p>
+          ${equation`e_k=\dfrac{-1+1}{2}=0`}
+          <p>${say('換成 S6、S7 亮起，黑線喺車頭右邊。', 'With S6 and S7 lit, the line is to the right of the nose.')}</p>
+          ${equation`e_k=\dfrac{3+5}{2}=+4`}
+        </div>
+        ${errorDemoHtml(say)}
+      </div>
     </section>
 
     <section class="lesson-section" id="pid-gains" tabindex="-1" aria-labelledby="pid-gains-title">
@@ -156,21 +162,37 @@ Serial.println();</code></pre>
 
     <section class="lesson-section lesson-worked" id="pid-example" tabindex="-1" aria-labelledby="pid-example-title">
       <h3 id="pid-example-title">${say('模擬器例題 · 計一次右轉', 'Worked example · one right turn')}</h3>
-      <p>${say('今次得 S6、S7 亮起。假設上次偏差係 +2，上次累積值係 1.96，基礎速度指令係 10。設 P = 1、I = 0.5、D = 0.005。', 'Only S6 and S7 are lit. The previous error was +2, the previous accumulated error was 1.96, and the base command is 10. Use P = 1, I = 0.5 and D = 0.005.')}</p>
-      <ol class="lesson-calculation">
-        <li><strong>${say('計偏差', 'Read the error')}</strong> ${equation`e_k=\dfrac{3+5}{2}=4`}</li>
-        <li><strong>${say('計三項修正', 'Calculate the three terms')}</strong>
-          ${equation`u_P=1\times 4=4`}
-          ${equation`u_I=0.5\times(1.96+4\times 0.010)=1`}
-          ${equation`u_D=0.005\times\dfrac{4-2}{0.010}=1`}
-        </li>
-        <li><strong>${say('預測車頭方向', 'Predict the turn')}</strong>
-          ${equation`u=4+1+1=6`}
-          ${equation`L=10+6=16`}
-          ${equation`R=10-6=4`}
-          <p>${say('左輪加快，車頭向右追返條黑線。', 'The faster left wheel turns the nose right, towards the line.')}</p>
-        </li>
-      </ol>
+      <div class="worked-layout">
+        <div>
+          <p>${say('今次得 S6、S7 亮起。假設上次偏差係 +2，上次累積值係 1.96，基礎速度指令係 10。設 P = 1、I = 0.5、D = 0.005。', 'Only S6 and S7 are lit. The previous error was +2, the previous accumulated error was 1.96, and the base command is 10. Use P = 1, I = 0.5 and D = 0.005.')}</p>
+          <ol class="lesson-calculation">
+            <li><strong>${say('計偏差', 'Read the error')}</strong> ${equation`e_k=\dfrac{3+5}{2}=4`}
+              <a class="sensing-demo-link" href="#error-demo">${say('用俯視圖對照探頭同黑線', 'Compare the tape and probes in the top view')}</a>
+            </li>
+            <li><strong>${say('計三項修正', 'Calculate the three terms')}</strong>
+              ${equation`u_P=1\times 4=4`}
+              ${equation`u_I=0.5\times(1.96+4\times 0.010)=1`}
+              ${equation`u_D=0.005\times\dfrac{4-2}{0.010}=1`}
+            </li>
+            <li><strong>${say('預測車頭方向', 'Predict the turn')}</strong>
+              ${equation`u=4+1+1=6`}
+              ${equation`L=10+6=16`}
+              ${equation`R=10-6=4`}
+              <p>${say('左輪加快，車頭向右追返條黑線。', 'The faster left wheel turns the nose right, towards the line.')}</p>
+            </li>
+          </ol>
+        </div>
+        <figure class="worked-replay">
+          <figcaption>
+            <strong>${say('模擬器重現例題', 'Worked example replay')}</strong>
+            <span>${say('重播用例題指定嘅上一格偏差 +2 同累積值 1.96 起步。S6、S7 讀到黑線嗰格，控制器發出左輪 16、右輪 4 嘅指令。指令延遲 120 ms 先傳到摩打。', 'The replay starts with the example’s previous error of +2 and accumulated value of 1.96. With S6 and S7 on the tape, the controller sends left 16 and right 4. The commands reach the motors after 120 ms.')}</span>
+          </figcaption>
+          <img id="worked-replay-image" src="/worksheets/pid-right-turn.webp" width="520" height="430" loading="lazy" decoding="async"
+            alt="${say('俯視模擬車。S6 同 S7 喺黑線上，偏差 +4。左輪指令 16，右輪指令 4，車頭向右修正。', 'Top view of the simulated car. S6 and S7 are over the black tape, so the error is +4. The left command is 16 and the right is 4, steering the car to its right.')}">
+          <button type="button" aria-controls="worked-replay-image">${say('播放 GIF', 'Play GIF')}</button>
+          <span class="worked-replay-status" role="status" hidden></span>
+        </figure>
+      </div>
     </section>
 
     <section class="lesson-section" id="steering-gains-guide" tabindex="-1" aria-labelledby="steering-guide-title">
@@ -212,4 +234,47 @@ Serial.println();</code></pre>
   const sensors = container.querySelector('#sensor-order-guide');
   bindSensorReadout(sensors, setupProbeSteps(sensors));
   setupAnalogLab(sensors.querySelector('#analog-lab'));
+  setupErrorDemo(container.querySelector('#error-demo'));
+  setupWorkedReplay(container.querySelector('.worked-replay'));
+}
+
+function setupWorkedReplay(replay) {
+  const poster = replay.querySelector('img');
+  const button = replay.querySelector('button');
+  const status = replay.querySelector('[role=status]');
+  let recording;
+  let playing = false;
+  let failed = false;
+
+  function update() {
+    button.textContent = playing ? t('返回定格', 'Show still frame') : t('播放 GIF', 'Play GIF');
+    status.hidden = !failed;
+    status.textContent = failed ? t('未能載入 GIF。再撳播放可以重試。', 'The GIF could not load. Press play to retry.') : '';
+  }
+
+  button.addEventListener('click', () => {
+    playing = !playing;
+    failed = false;
+    if (playing) {
+      const image = poster.cloneNode();
+      recording = image;
+      image.removeAttribute('loading');
+      image.addEventListener('load', () => {
+        if (recording === image) poster.replaceWith(image);
+      }, { once: true });
+      image.addEventListener('error', () => {
+        if (recording !== image) return;
+        recording = null;
+        playing = false;
+        failed = true;
+        update();
+      }, { once: true });
+      image.src = '/worksheets/pid-right-turn.gif';
+    } else {
+      recording.replaceWith(poster);
+      recording = null;
+    }
+    update();
+  });
+  onLanguageChange(update);
 }
